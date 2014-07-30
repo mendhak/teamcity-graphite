@@ -11,9 +11,7 @@
   <bean class="mendhak.teamcity.graphite.ui.SettingsPageController"/>
 
   <bean class="mendhak.teamcity.graphite.BuildStatusListener"/>
-  <bean class="mendhak.teamcity.graphite.ChangeStatusUpdater"/>
-
-  <bean class="mendhak.teamcity.graphite.api.GraphiteClient"/>
+  <bean class="mendhak.teamcity.graphite.GraphiteClient"/>
 
   <bean class="mendhak.teamcity.graphite.GraphiteBuildParametersProvider"/>
 
