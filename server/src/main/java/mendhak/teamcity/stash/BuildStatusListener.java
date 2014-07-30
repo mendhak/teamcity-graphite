@@ -40,6 +40,11 @@ public class BuildStatusListener
 
     final StashServerKeyNames keyNames = new StashServerKeyNames();
 
+    private String getGraphitePrefix()
+    {
+        return "GogDhak";
+    }
+
     public BuildStatusListener(@NotNull final EventDispatcher<BuildServerListener> listener,
                                @NotNull final ChangeStatusUpdater updater)
     {
@@ -55,19 +60,8 @@ public class BuildStatusListener
             @Override
             public void buildFinished(SRunningBuild build)
             {
-
-                try {
-                    Thread.sleep(2500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Map<String, BigDecimal> statisticValues = build.getStatisticValues();
-
-                for(Map.Entry<String, BigDecimal> e: statisticValues.entrySet()){
-                    Logger.LogInfo("Key: " + e.getKey() + " . Value: " + e.getValue());
-                }
-
+                //TODO Post build finished to graphite.
+                // prefix.buildConfigurationId.build.finished
                 updateBuildStatus(build, false);
             }
 
