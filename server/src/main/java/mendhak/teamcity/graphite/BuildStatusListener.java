@@ -47,14 +47,25 @@ public class BuildStatusListener
             @Override
             public void changesLoaded(SRunningBuild build)
             {
-                //updateBuildStatus(build, true);
+                boolean sendStarted = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildStarted()));
+
+                if(sendStarted){
+                    GraphiteMetric metric = new GraphiteMetric( "started", "1", System.currentTimeMillis()/1000 );
+                    h.scheduleBuildMetric(build, metric);
+                }
+
             }
 
             @Override
             public void buildFinished(SRunningBuild build)
             {
-                GraphiteMetric metric = new GraphiteMetric( "finished", String.valueOf(build.getDuration()), System.currentTimeMillis()/1000 );
-                h.scheduleBuildMetric(build, metric);
+                boolean sendFinished = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildFinished()));
+
+                if(sendFinished){
+                    GraphiteMetric metric = new GraphiteMetric( "finished", String.valueOf(build.getDuration()), System.currentTimeMillis()/1000 );
+                    h.scheduleBuildMetric(build, metric);
+                }
+
             }
 
             @Override

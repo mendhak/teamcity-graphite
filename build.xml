@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="teamcity-stash" default="copy-zip-to-source">
+<project name="teamcity-graphite" default="copy-zip-to-source">
   
   
   <property file="build.properties"/>
