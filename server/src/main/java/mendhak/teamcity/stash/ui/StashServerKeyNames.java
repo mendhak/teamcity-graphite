@@ -20,26 +20,36 @@ package mendhak.teamcity.stash.ui;
 
 import jetbrains.buildServer.agent.Constants;
 
+//These methods must follow a specific naming pattern
+//If your feature.jsp has a key called ${keys.graphitePrefix},
+//the method must be getGraphitePrefix()
+
 public class StashServerKeyNames
 {
     public String getServerKey()
     {
-        return "stash_host";
+        return "graphite_host";
     }
 
-    public String getUserNameKey()
+    public String getServerPort()
     {
-        return "stash_username";
+        return "graphite_port";
     }
 
-    public String getPasswordKey()
+
+    public String getGraphitePrefix()
     {
-        return Constants.SECURE_PROPERTY_PREFIX + "stash_username";
+        return "graphite_prefix";
     }
 
-    public String getOnlyLatestKey()
+    public String getSendBuildStarted()
     {
-        return "stash_only_latest";
+        return "graphite_buildstarted";
+    }
+
+    public String getSendBuildFinished()
+    {
+        return "graphite_buildfinished";
     }
 
     public String getVCSIgnoreKey()
@@ -47,9 +57,9 @@ public class StashServerKeyNames
         return "stash_vcsignorecsv";
     }
 
-    public String getfailCancelledBuilds()
-    {
-        return "stash_failCancelledBuilds";
-    }
+
+
+
+
 
 }

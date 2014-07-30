@@ -34,22 +34,21 @@ public class StashClient
 {
 
 
-    private final String stashBaseUrl;
-    private final String stashUsername;
-    private final String stashPassword;
+    private final String graphiteServer;
+    private final String graphitePort;
+    private final String graphitePrefix;
 
     public StashClient()
     {
-        this("http://example.com", "testuser", "hunter2");
+        this("127.0.0.1", "2003", "testprefix");
     }
 
 
-
-    public StashClient(String stashBaseUrl, String username, String password)
+    public StashClient(String graphiteServer, String graphitePort, String graphitePrefix)
     {
-        this.stashBaseUrl = stashBaseUrl;
-        stashUsername = username;
-        stashPassword = password;
+        this.graphiteServer = graphiteServer;
+        this.graphitePort = graphitePort;
+        this.graphitePrefix = graphitePrefix;
     }
 
     public String GetJsonBody(String buildState, String key, String name, String url, String description)
@@ -109,8 +108,8 @@ public class StashClient
     {
 
 
-        String stashUrl = GetBuildStatusUrl(stashBaseUrl, revision);
-        String basicAuthHeader = GetAuthorizationHeaderValue(stashUsername, stashPassword);
+        String stashUrl = GetBuildStatusUrl(graphiteServer, revision);
+        String basicAuthHeader = GetAuthorizationHeaderValue(graphitePort, graphitePrefix);
         String shortDisplayName = new Scanner(displayName).nextLine();
         String jsonBody = GetJsonBody(GetBuildState(state), key, shortDisplayName, url, description);
 

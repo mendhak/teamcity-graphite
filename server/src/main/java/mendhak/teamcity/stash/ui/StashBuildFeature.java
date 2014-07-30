@@ -66,7 +66,7 @@ public class StashBuildFeature extends BuildFeature
     @Override
     public String describeParameters(@NotNull Map<String, String> params)
     {
-        return "Build statuses will be sent to " + params.get(new StashServerKeyNames().getServerKey());
+        return "Build metrics will be sent to " + params.get(new StashServerKeyNames().getServerKey()) + ":" + params.get(new StashServerKeyNames().getServerPort());
 
     }
 
@@ -97,9 +97,8 @@ public class StashBuildFeature extends BuildFeature
                     return result;
                 }
 
-                validate(propertiesMap, keyNames.getUserNameKey(), "Username must be specified", result);
-                validate(propertiesMap, keyNames.getPasswordKey(), "Password must be specified", result);
-                validate(propertiesMap, keyNames.getServerKey(), "Stash server base URL", result);
+
+                validate(propertiesMap, keyNames.getServerKey(), "Graphite server cannot be empty", result);
 
                 return result;
             }
@@ -111,7 +110,11 @@ public class StashBuildFeature extends BuildFeature
     public Map<String, String> getDefaultParameters()
     {
         final Map<String, String> map = new HashMap<String, String>();
-        map.put(new StashServerKeyNames().getServerKey(), "http://127.0.0.1:7990");
+        map.put(new StashServerKeyNames().getServerKey(), "127.0.0.1");
+        map.put(new StashServerKeyNames().getServerPort(), "2003");
+        map.put(new StashServerKeyNames().getGraphitePrefix(), "test.build.myapi");
+        map.put(new StashServerKeyNames().getSendBuildStarted(), "true");
+        map.put(new StashServerKeyNames().getSendBuildFinished(), "true");
         return map;
     }
 

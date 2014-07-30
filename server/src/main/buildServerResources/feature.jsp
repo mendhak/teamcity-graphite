@@ -24,51 +24,53 @@
 <tr>
   <td colspan="2">Specify Stash repository name and credentials to push status updates to</td>
 </tr>
-<l:settingsGroup title="Authentication">
+<l:settingsGroup title="Graphite Server Details">
 <tr>
-  <th>URL:<l:star/></th>
+  <th>Server<l:star/></th>
   <td>
     <props:textProperty name="${keys.serverKey}" className="longField"/>
     <span class="error" id="error_${keys.serverKey}"></span>
-    <span class="smallNote">Specify Stash URL</span>
+    <span class="smallNote">Specify Graphite Server</span>
   </td>
 </tr>
+
 <tr>
-  <th>User Name:<l:star/></th>
+  <th>Port<l:star/></th>
   <td>
-    <props:textProperty name="${keys.userNameKey}" className="longField"/>
-    <span class="error" id="error_${keys.userNameKey}"></span>
-    <span class="smallNote">Specify Stash username</span>
+    <props:textProperty name="${keys.serverPort}" className="longField"/>
+    <span class="error" id="error_${keys.serverPort}"></span>
+    <span class="smallNote">Specify Graphite Port for UDP connections</span>
   </td>
 </tr>
-<tr>
-  <th>Password:<l:star/></th>
-  <td>
-    <props:passwordProperty name="${keys.passwordKey}" className="longField"/>
-    <span class="error" id="error_${keys.passwordKey}"></span>
-    <span class="smallNote">Specify Stash password</span>
-  </td>
-</tr>
+
 </l:settingsGroup>
 <l:settingsGroup title="Other">
 <tr>
-  <th>Canceled Builds:</th>
+  <th>Prefix:</th>
   <td>
-    <props:checkboxProperty name="${keys.failCancelledBuilds}" />
-    <label for="${keys.failCancelledBuilds}">Mark cancelled builds as failed</label>
-    <span class="smallNote">Stash has no canceled status, choose to send it as pass or failed</span>
+    <props:textProperty name="${keys.graphitePrefix}" />
+    <label for="${keys.graphitePrefix}">Prefix to use for metrics</label>
+    <span class="smallNote">build.myapi, for example</span>
   </td>
 </tr>
 <tr>
-  <th>Stash history:</th>
+  <th>Send Build Start:</th>
   <td>
-    <props:checkboxProperty name="${keys.onlyLatestKey}" />
-    <label for="${keys.onlyLatestKey}">Only show latest build status for each commit</label>
-    <span class="smallNote">If checked, only the latest build status of each commit appears in Stash</span>
+    <props:checkboxProperty name="${keys.sendBuildStarted}" />
+    <label for="${keys.sendBuildStarted}">Sends indicator that build has started</label>
+    <span class="smallNote"> </span>
   </td>
 </tr>
 <tr>
-  <th>Ignore VCS Roots:</th>
+  <th>Send Build Finished:</th>
+  <td>
+    <props:checkboxProperty name="${keys.sendBuildFinished}" />
+    <label for="${keys.sendBuildFinished}">Sends indicator that build has finished</label>
+    <span class="smallNote"> </span>
+  </td>
+</tr>
+<tr>
+  <th>...:</th>
   <td>
     <props:textProperty name="${keys.VCSIgnoreKey}" className="longField"/>
     <span class="error" id="error_${keys.VCSIgnoreKey}"></span>

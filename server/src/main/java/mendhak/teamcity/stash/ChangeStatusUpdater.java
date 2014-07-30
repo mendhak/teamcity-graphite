@@ -147,7 +147,7 @@ public class ChangeStatusUpdater
                 StashClient.BuildState status = build.getStatusDescriptor().isSuccessful() ?
                         StashClient.BuildState.SUCCESSFUL : StashClient.BuildState.FAILED;
 
-                boolean failCancelledBuilds = Boolean.valueOf(feature.getParameters().get(keyNames.getfailCancelledBuilds()));
+                boolean failCancelledBuilds = true;// Boolean.valueOf(feature.getParameters().get(keyNames.getfailCancelledBuilds()));
 
 
                 //Makes up for lack of canceled state in Stash.
@@ -173,11 +173,11 @@ public class ChangeStatusUpdater
                     {
 
                         StashClient client = new StashClient(build.getParametersProvider().get(keyNames.getServerKey()),
-                                build.getParametersProvider().get(keyNames.getUserNameKey()),
-                                feature.getParameters().get(keyNames.getPasswordKey()));
+                                feature.getParameters().get(keyNames.getServerPort()),
+                                feature.getParameters().get(keyNames.getGraphitePrefix()));
 
-                        boolean onlyShowLatestBuild =
-                                Boolean.valueOf(feature.getParameters().get(keyNames.getOnlyLatestKey()));
+                        boolean onlyShowLatestBuild =false;
+                                //Boolean.valueOf(feature.getParameters().get(keyNames.getOnlyLatestKey()));
                         client.SendBuildStatus(status,
                                 onlyShowLatestBuild ? build.getBuildTypeId() : String.valueOf(build.getBuildId()),
                                 getBuildDisplayName(build), myWeb.getViewResultsUrl(build),

@@ -80,6 +80,9 @@ public class BuildStatusListener
 
             @Override
             public void statisticValuePublished(@NotNull SBuild build, @NotNull String valueTypeKey, @NotNull BigDecimal value) {
+
+                build.getParametersProvider().get(keyNames.getServerKey());
+
                 super.statisticValuePublished(build, valueTypeKey, value);
                 Logger.LogInfo(valueTypeKey + " : " + String.valueOf(value));
             }
