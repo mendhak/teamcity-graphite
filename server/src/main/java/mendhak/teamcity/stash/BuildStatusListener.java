@@ -27,10 +27,13 @@ import mendhak.teamcity.stash.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 
+import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.*;
 
 
 public class BuildStatusListener
@@ -42,13 +45,21 @@ public class BuildStatusListener
 
     private String getGraphitePrefix()
     {
-        return "GogDhak";
+        return "flight.gogdhak";
     }
 
-    private void pushStatToGraphite(String host, String port, String metricName, String metricValue, DateTime metricTimestamp)
+    private void pushStatToGraphite(@NotNull String host, @NotNull int port, @NotNull String metricName, @NotNull String metricValue, @NotNull long metricTimestamp)
     {
-        //TODO Socket connection to host:port, push data. Fire and forget.
         //TODO Consider refactoring to its own individual class
+        try {
+            Socket socket = new Socket(host, port);
+            PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
+            outputStream.println(String.format("%s %s %s", metricName, metricValue, metricTimestamp));
+
+            outputStream.close();
+            socket.close();
+        }
+        catch (Exception e) { }
     }
 
     public BuildStatusListener(@NotNull final EventDispatcher<BuildServerListener> listener,
@@ -66,8 +77,14 @@ public class BuildStatusListener
             @Override
             public void buildFinished(SRunningBuild build)
             {
-                //TODO Post build finished to graphite.
-                // prefix.buildConfigurationId.build.finished
+                try {
+                    String metricName = getGraphitePrefix() + ".finished";
+                    String metricValue = String.valueOf(build.getDuration());
+
+                    pushStatToGraphite("127.0.0.1", 2003, metricName, metricValue, System.currentTimeMillis() / 1000);
+                }
+                catch(Exception e) { }
+
                 updateBuildStatus(build, false);
             }
 
@@ -79,9 +96,6 @@ public class BuildStatusListener
 
             @Override
             public void statisticValuePublished(@NotNull SBuild build, @NotNull String valueTypeKey, @NotNull BigDecimal value) {
-
-                build.getParametersProvider().get(keyNames.getServerKey());
-
                 super.statisticValuePublished(build, valueTypeKey, value);
                 Logger.LogInfo(valueTypeKey + " : " + String.valueOf(value));
             }
