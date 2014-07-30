@@ -26,9 +26,11 @@ import mendhak.teamcity.stash.ui.StashBuildFeature;
 import mendhak.teamcity.stash.ui.StashServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 public class BuildStatusListener
@@ -53,6 +55,19 @@ public class BuildStatusListener
             @Override
             public void buildFinished(SRunningBuild build)
             {
+
+                try {
+                    Thread.sleep(2500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Map<String, BigDecimal> statisticValues = build.getStatisticValues();
+
+                for(Map.Entry<String, BigDecimal> e: statisticValues.entrySet()){
+                    Logger.LogInfo("Key: " + e.getKey() + " . Value: " + e.getValue());
+                }
+
                 updateBuildStatus(build, false);
             }
 
@@ -62,8 +77,11 @@ public class BuildStatusListener
                 updateBuildStatus(build, false);
             }
 
-
-
+            @Override
+            public void statisticValuePublished(@NotNull SBuild build, @NotNull String valueTypeKey, @NotNull BigDecimal value) {
+                super.statisticValuePublished(build, valueTypeKey, value);
+                Logger.LogInfo(valueTypeKey + " : " + String.valueOf(value));
+            }
         });
     }
 
