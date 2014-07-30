@@ -16,9 +16,7 @@
 */
 
 
-package mendhak.teamcity.stash.ui;
-
-import jetbrains.buildServer.agent.Constants;
+package mendhak.teamcity.graphite.ui;
 
 //These methods must follow a specific naming pattern
 //If your feature.jsp has a key called ${keys.graphitePrefix},

@@ -16,7 +16,7 @@
 */
 
 
-package mendhak.teamcity.stash.ui;
+package mendhak.teamcity.graphite.ui;
 
 import jetbrains.buildServer.serverSide.BuildFeature;
 import jetbrains.buildServer.serverSide.InvalidProperty;
@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class GraphiteBuildFeature extends BuildFeature
 {
-    public static final String FEATURE_TYPE = "teamcity.stash.status";
+    public static final String FEATURE_TYPE = "teamcity.graphite.status";
     private final PluginDescriptor descriptor;
 
     public GraphiteBuildFeature(@NotNull final PluginDescriptor descriptor)

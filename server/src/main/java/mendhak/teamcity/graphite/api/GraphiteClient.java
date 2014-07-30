@@ -16,9 +16,9 @@
 */
 
 
-package mendhak.teamcity.stash.api;
+package mendhak.teamcity.graphite.api;
 
-import mendhak.teamcity.stash.Logger;
+import mendhak.teamcity.graphite.Logger;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.net.ssl.*;

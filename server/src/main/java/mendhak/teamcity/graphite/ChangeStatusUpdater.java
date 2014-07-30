@@ -16,7 +16,7 @@
 */
 
 
-package mendhak.teamcity.stash;
+package mendhak.teamcity.graphite;
 
 import jetbrains.buildServer.serverSide.BuildsManager;
 import jetbrains.buildServer.serverSide.SBuildFeatureDescriptor;
@@ -28,9 +28,9 @@ import jetbrains.buildServer.users.SUser;
 import jetbrains.buildServer.users.UserModel;
 import jetbrains.buildServer.util.ExceptionUtil;
 import jetbrains.buildServer.util.StringUtil;
-import mendhak.teamcity.stash.api.GraphiteClient;
-import mendhak.teamcity.stash.ui.GraphiteBuildFeature;
-import mendhak.teamcity.stash.ui.GraphiteServerKeyNames;
+import mendhak.teamcity.graphite.api.GraphiteClient;
+import mendhak.teamcity.graphite.ui.GraphiteBuildFeature;
+import mendhak.teamcity.graphite.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;

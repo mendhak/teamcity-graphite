@@ -16,7 +16,7 @@
 */
 
 
-package mendhak.teamcity.stash.ui;
+package mendhak.teamcity.graphite.ui;
 
 import jetbrains.buildServer.controllers.BaseController;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;

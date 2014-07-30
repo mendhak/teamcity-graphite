@@ -16,22 +16,18 @@
 */
 
 
-package mendhak.teamcity.stash;
+package mendhak.teamcity.graphite;
 
 
 import jetbrains.buildServer.serverSide.*;
 import jetbrains.buildServer.util.EventDispatcher;
 import jetbrains.buildServer.util.StringUtil;
-import mendhak.teamcity.stash.ui.GraphiteBuildFeature;
-import mendhak.teamcity.stash.ui.GraphiteServerKeyNames;
+import mendhak.teamcity.graphite.ui.GraphiteBuildFeature;
+import mendhak.teamcity.graphite.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.DateTime;
 
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.*;
 
@@ -96,6 +92,7 @@ public class BuildStatusListener
 
             @Override
             public void statisticValuePublished(@NotNull SBuild build, @NotNull String valueTypeKey, @NotNull BigDecimal value) {
+                build.getParametersProvider().get(keyNames.getVCSIgnoreKey());
                 super.statisticValuePublished(build, valueTypeKey, value);
                 Logger.LogInfo(valueTypeKey + " : " + String.valueOf(value));
             }

@@ -19,10 +19,10 @@
     */
   --%>
 
-<jsp:useBean id="keys" class="mendhak.teamcity.stash.ui.GraphiteServerKeyNames"/>
+<jsp:useBean id="keys" class="mendhak.teamcity.graphite.ui.GraphiteServerKeyNames"/>
 
 <tr>
-  <td colspan="2">Specify Stash repository name and credentials to push status updates to</td>
+  <td colspan="2">Specify Graphite server details and what to send</td>
 </tr>
 <l:settingsGroup title="Graphite Server Details">
 <tr>
@@ -39,12 +39,12 @@
   <td>
     <props:textProperty name="${keys.serverPort}" className="longField"/>
     <span class="error" id="error_${keys.serverPort}"></span>
-    <span class="smallNote">Specify Graphite Port for UDP connections</span>
+    <span class="smallNote">Specify Graphite Port for TCP connections</span>
   </td>
 </tr>
 
 </l:settingsGroup>
-<l:settingsGroup title="Other">
+<l:settingsGroup title="What to send">
 <tr>
   <th>Prefix:</th>
   <td>

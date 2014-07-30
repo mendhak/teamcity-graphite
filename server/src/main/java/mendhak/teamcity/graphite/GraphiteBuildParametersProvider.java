@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package mendhak.teamcity.stash;
+package mendhak.teamcity.graphite;
 
 import jetbrains.buildServer.parameters.ValueResolver;
 import jetbrains.buildServer.serverSide.SBuild;
 import jetbrains.buildServer.serverSide.SBuildFeatureDescriptor;
 import jetbrains.buildServer.serverSide.SBuildType;
 import jetbrains.buildServer.serverSide.parameters.AbstractBuildParametersProvider;
-import mendhak.teamcity.stash.ui.GraphiteBuildFeature;
-import mendhak.teamcity.stash.ui.GraphiteServerKeyNames;
+import mendhak.teamcity.graphite.ui.GraphiteBuildFeature;
+import mendhak.teamcity.graphite.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

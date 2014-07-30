@@ -7,14 +7,14 @@
         >
 
 
-  <bean class="mendhak.teamcity.stash.ui.GraphiteBuildFeature"/>
-  <bean class="mendhak.teamcity.stash.ui.SettingsPageController"/>
+  <bean class="mendhak.teamcity.graphite.ui.GraphiteBuildFeature"/>
+  <bean class="mendhak.teamcity.graphite.ui.SettingsPageController"/>
 
-  <bean class="mendhak.teamcity.stash.BuildStatusListener"/>
-  <bean class="mendhak.teamcity.stash.ChangeStatusUpdater"/>
+  <bean class="mendhak.teamcity.graphite.BuildStatusListener"/>
+  <bean class="mendhak.teamcity.graphite.ChangeStatusUpdater"/>
 
-  <bean class="mendhak.teamcity.stash.api.GraphiteClient"/>
+  <bean class="mendhak.teamcity.graphite.api.GraphiteClient"/>
 
-  <bean class="mendhak.teamcity.stash.GraphiteBuildParametersProvider"/>
+  <bean class="mendhak.teamcity.graphite.GraphiteBuildParametersProvider"/>
 
 </beans>

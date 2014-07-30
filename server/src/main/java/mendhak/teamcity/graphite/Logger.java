@@ -19,7 +19,7 @@
 
 
 
-package mendhak.teamcity.stash;
+package mendhak.teamcity.graphite;
 
 public class Logger
 {
