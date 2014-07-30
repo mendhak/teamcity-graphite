@@ -27,10 +27,12 @@ import mendhak.teamcity.stash.ui.StashServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.*;
 
 
@@ -49,26 +51,15 @@ public class BuildStatusListener
     private void pushStatToGraphite(@NotNull String host, @NotNull int port, @NotNull String metricName, @NotNull String metricValue, @NotNull long metricTimestamp)
     {
         //TODO Consider refactoring to its own individual class
-
-        DatagramSocket socket = null;
         try {
-            socket = new DatagramSocket();
-            InetAddress address = InetAddress.getByName(host); // domain name or IP e.g. 127.1.2.3
-            byte[] metric = String.format("%s %s %s", metricName, metricValue, metricTimestamp).getBytes();
-            DatagramPacket message = new DatagramPacket(metric, metric.length, address, port);
+            Socket socket = new Socket(host, port);
+            PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
+            outputStream.println(String.format("%s %s %s", metricName, metricValue, metricTimestamp));
 
-            // Fire
-            socket.send(message);
-            //Forget
+            outputStream.close();
+            socket.close();
         }
         catch (Exception e) { }
-        finally
-        {
-            if (socket != null && !socket.isClosed())
-            {
-                socket.close();
-            }
-        }
     }
 
     public BuildStatusListener(@NotNull final EventDispatcher<BuildServerListener> listener,
@@ -90,7 +81,7 @@ public class BuildStatusListener
                     String metricName = getGraphitePrefix() + ".finished";
                     String metricValue = String.valueOf(build.getDuration());
 
-                    pushStatToGraphite("10.53.141.27", 2003, metricName, metricValue, System.currentTimeMillis() / 1000);
+                    pushStatToGraphite("127.0.0.1", 2003, metricName, metricValue, System.currentTimeMillis() / 1000);
                 }
                 catch(Exception e) { }
 
