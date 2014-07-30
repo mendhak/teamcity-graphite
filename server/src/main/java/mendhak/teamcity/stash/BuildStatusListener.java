@@ -25,6 +25,7 @@ import jetbrains.buildServer.util.StringUtil;
 import mendhak.teamcity.stash.ui.StashBuildFeature;
 import mendhak.teamcity.stash.ui.StashServerKeyNames;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,6 +44,12 @@ public class BuildStatusListener
     private String getGraphitePrefix()
     {
         return "GogDhak";
+    }
+
+    private void pushStatToGraphite(String host, String port, String metricName, String metricValue, DateTime metricTimestamp)
+    {
+        //TODO Socket connection to host:port, push data. Fire and forget.
+        //TODO Consider refactoring to its own individual class
     }
 
     public BuildStatusListener(@NotNull final EventDispatcher<BuildServerListener> listener,
