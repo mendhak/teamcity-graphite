@@ -20,113 +20,62 @@ package mendhak.teamcity.graphite;
 
 import jetbrains.buildServer.serverSide.*;
 import jetbrains.buildServer.serverSide.executors.ExecutorServices;
-import jetbrains.buildServer.serverSide.userChanges.CanceledInfo;
-import jetbrains.buildServer.users.SUser;
-import jetbrains.buildServer.users.UserModel;
-import jetbrains.buildServer.util.ExceptionUtil;
-import jetbrains.buildServer.util.StringUtil;
-import mendhak.teamcity.graphite.ui.GraphiteBuildFeature;
 import mendhak.teamcity.graphite.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 
 public class GraphiteClient
 {
-    private final ExecutorService myExecutor;
-    @NotNull
+    private final ExecutorService executor;
 
-    private final WebLinks myWeb;
-    private final BuildsManager buildsManager;
-    private final UserModel users;
 
-    public GraphiteClient(@NotNull final ExecutorServices services,
-                          @NotNull final WebLinks web,
-                          @NotNull final UserModel userModel,
-                          BuildsManager manager)
+
+    public GraphiteClient(@NotNull final ExecutorServices services)
     {
-        myWeb = web;
-        myExecutor = services.getLowPriorityExecutorService();
-        buildsManager = manager;
-        this.users = userModel;
+        executor = services.getLowPriorityExecutorService();
     }
-
-
 
 
     public static interface Handler
     {
         void scheduleBuildMetric(@NotNull final SBuild build,
-                                 @NotNull String metricName, @NotNull String metricValue, @NotNull long metricTimestamp);
-
-
+                                 @NotNull GraphiteMetric metric);
     }
 
     @NotNull
     public Handler getUpdateHandler()
     {
-
-
         final GraphiteServerKeyNames keyNames = new GraphiteServerKeyNames();
-
 
         return new Handler()
         {
+            public void scheduleBuildMetric(@NotNull final SBuild build,
+                                            @NotNull final GraphiteMetric metric) {
 
-            public void scheduleBuildMetric(@NotNull SBuild build,
-                                            @NotNull String metricName, @NotNull String metricValue, @NotNull long metricTimestamp) {
-
-                try {
-
-                    String host = build.getParametersProvider().get(keyNames.getServerKey());
-                    int port = Integer.valueOf(build.getParametersProvider().get(keyNames.getServerPort()));
-                    String metricPrefix = build.getParametersProvider().get(keyNames.getGraphitePrefix());
-
-                    Socket socket = new Socket(host, port);
-                    PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
-                    outputStream.println(String.format("%s %s %s", metricPrefix + "." + metricName, metricValue, metricTimestamp));
-
-                    outputStream.close();
-                    socket.close();
-                }
-                catch (Exception e) {
-                    Logger.LogError("Could not send packet to Graphite", e);
-                }
-            }
-
-
-
-            private void scheduleChangeUpdate(@NotNull final String hash,
-                                              @NotNull final SRunningBuild build
-                                              )
-            {
-                Logger.LogInfo("Scheduling Stash status update for hash: " + hash + ", buildId: "
-                        + build.getBuildId() );
-
-                myExecutor.submit(ExceptionUtil.catchAll("set change status on Stash", new Runnable() {
+                executor.submit(new Runnable() {
                     public void run() {
+                        try {
 
-//                        GraphiteClient client = new GraphiteClient(build.getParametersProvider().get(keyNames.getServerKey()),
-//                                feature.getParameters().get(keyNames.getServerPort()),
-//                                feature.getParameters().get(keyNames.getGraphitePrefix()));
-//
-//                        boolean onlyShowLatestBuild =false;
-//                                //Boolean.valueOf(feature.getParameters().get(keyNames.getOnlyLatestKey()));
-//                        client.SendBuildStatus(status,
-//                                onlyShowLatestBuild ? build.getBuildTypeId() : String.valueOf(build.getBuildId()),
-//                                getBuildDisplayName(build), myWeb.getViewResultsUrl(build),
-//                                getBuildDisplayDescription(build), hash);
+                            String host = build.getParametersProvider().get(keyNames.getServerKey());
+                            int port = Integer.valueOf(build.getParametersProvider().get(keyNames.getServerPort()));
+                            String metricPrefix = build.getParametersProvider().get(keyNames.getGraphitePrefix());
 
-                        Logger.LogInfo("Updated Stash status for revision: " + hash + ", buildId: " + build.getBuildId());
+                            Socket socket = new Socket(host, port);
+                            PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
+                            outputStream.println(String.format("%s %s %s", metricPrefix + "." + metric.getName(), metric.getValue(), metric.getTimestamp()));
 
+                            outputStream.close();
+                            socket.close();
+                        } catch (Exception e) {
+                            Logger.LogError("Could not send packet to Graphite", e);
+                        }
                     }
-                }));
+                });
             }
+
         };
     }
 }

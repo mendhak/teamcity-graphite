@@ -34,24 +34,6 @@ public class BuildStatusListener
 
     final GraphiteServerKeyNames keyNames = new GraphiteServerKeyNames();
 
-//    private String getGraphitePrefix()
-//    {
-//        return "flight.gogdhak";
-//    }
-
-//    private void pushStatToGraphite(@NotNull String host, @NotNull int port, @NotNull String metricName, @NotNull String metricValue, @NotNull long metricTimestamp)
-//    {
-//        //TODO Consider refactoring to its own individual class
-//        try {
-//            Socket socket = new Socket(host, port);
-//            PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
-//            outputStream.println(String.format("%s %s %s", metricName, metricValue, metricTimestamp));
-//
-//            outputStream.close();
-//            socket.close();
-//        }
-//        catch (Exception e) { }
-//    }
 
     public BuildStatusListener(@NotNull final EventDispatcher<BuildServerListener> listener,
                                @NotNull final GraphiteClient graphiteClient)
@@ -71,14 +53,8 @@ public class BuildStatusListener
             @Override
             public void buildFinished(SRunningBuild build)
             {
-                try {
-
-                    String metricName = "finished";
-                    String metricValue = String.valueOf(build.getDuration());
-                    h.scheduleBuildMetric(build, metricName, metricValue,  System.currentTimeMillis() / 1000 );
-                }
-                catch(Exception e) { }
-
+                GraphiteMetric metric = new GraphiteMetric( "finished", String.valueOf(build.getDuration()), System.currentTimeMillis()/1000 );
+                h.scheduleBuildMetric(build, metric);
             }
 
             @Override
@@ -90,11 +66,9 @@ public class BuildStatusListener
             @Override
             public void statisticValuePublished(@NotNull SBuild build, @NotNull String valueTypeKey, @NotNull BigDecimal value) {
                 super.statisticValuePublished(build, valueTypeKey, value);
-                String metricName = valueTypeKey.replace(":",".");
+                GraphiteMetric metric = new GraphiteMetric( valueTypeKey.replace(":","."), String.valueOf(value), System.currentTimeMillis()/1000);
 
-                h.scheduleBuildMetric(build, metricName, String.valueOf(value), System.currentTimeMillis()/1000 );
-                //build.getParametersProvider().get(keyNames.getSendBuildStarted());
-
+                h.scheduleBuildMetric(build, metric);
                 Logger.LogInfo(valueTypeKey + " : " + String.valueOf(value));
             }
         });
