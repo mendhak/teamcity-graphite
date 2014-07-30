@@ -111,7 +111,7 @@ public class StashBuildFeature extends BuildFeature
     {
         final Map<String, String> map = new HashMap<String, String>();
         map.put(new StashServerKeyNames().getServerKey(), "127.0.0.1");
-        map.put(new StashServerKeyNames().getServerPort(), "2003");
+        map.put(new StashServerKeyNames().getServerPort(), "8125");
         map.put(new StashServerKeyNames().getGraphitePrefix(), "test.build.myapi");
         map.put(new StashServerKeyNames().getSendBuildStarted(), "true");
         map.put(new StashServerKeyNames().getSendBuildFinished(), "true");

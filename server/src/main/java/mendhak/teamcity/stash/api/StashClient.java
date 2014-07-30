@@ -40,7 +40,7 @@ public class StashClient
 
     public StashClient()
     {
-        this("127.0.0.1", "2003", "testprefix");
+        this("127.0.0.1", "8125", "testprefix");
     }
 
 
