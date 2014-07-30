@@ -52,7 +52,7 @@ public class StashBuildFeature extends BuildFeature
     @Override
     public String getDisplayName()
     {
-        return "Report build status to Atlassian Stash";
+        return "Send metrics to Graphite";
     }
 
     @Nullable

@@ -8,7 +8,7 @@
       </options>
     </properties>
     <root id="root">
-      <element id="archive" name="teamcity.stash.zip">
+      <element id="archive" name="teamcity.graphite.zip">
         <element id="artifact" artifact-name="plugin" />
       </element>
     </root>
