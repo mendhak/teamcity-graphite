@@ -31,12 +31,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class StashBuildFeature extends BuildFeature
+public class GraphiteBuildFeature extends BuildFeature
 {
     public static final String FEATURE_TYPE = "teamcity.stash.status";
     private final PluginDescriptor descriptor;
 
-    public StashBuildFeature(@NotNull final PluginDescriptor descriptor)
+    public GraphiteBuildFeature(@NotNull final PluginDescriptor descriptor)
     {
         this.descriptor = descriptor;
     }
@@ -66,7 +66,7 @@ public class StashBuildFeature extends BuildFeature
     @Override
     public String describeParameters(@NotNull Map<String, String> params)
     {
-        return "Build metrics will be sent to " + params.get(new StashServerKeyNames().getServerKey()) + ":" + params.get(new StashServerKeyNames().getServerPort());
+        return "Build metrics will be sent to " + params.get(new GraphiteServerKeyNames().getServerKey()) + ":" + params.get(new GraphiteServerKeyNames().getServerPort());
 
     }
 
@@ -74,7 +74,7 @@ public class StashBuildFeature extends BuildFeature
     @Override
     public PropertiesProcessor getParametersProcessor()
     {
-        final StashServerKeyNames keyNames = new StashServerKeyNames();
+        final GraphiteServerKeyNames keyNames = new GraphiteServerKeyNames();
         return new PropertiesProcessor()
         {
             private void validate(@NotNull final Map<String, String> properties,
@@ -110,11 +110,11 @@ public class StashBuildFeature extends BuildFeature
     public Map<String, String> getDefaultParameters()
     {
         final Map<String, String> map = new HashMap<String, String>();
-        map.put(new StashServerKeyNames().getServerKey(), "127.0.0.1");
-        map.put(new StashServerKeyNames().getServerPort(), "8125");
-        map.put(new StashServerKeyNames().getGraphitePrefix(), "test.build.myapi");
-        map.put(new StashServerKeyNames().getSendBuildStarted(), "true");
-        map.put(new StashServerKeyNames().getSendBuildFinished(), "true");
+        map.put(new GraphiteServerKeyNames().getServerKey(), "127.0.0.1");
+        map.put(new GraphiteServerKeyNames().getServerPort(), "8125");
+        map.put(new GraphiteServerKeyNames().getGraphitePrefix(), "test.build.myapi");
+        map.put(new GraphiteServerKeyNames().getSendBuildStarted(), "true");
+        map.put(new GraphiteServerKeyNames().getSendBuildFinished(), "true");
         return map;
     }
 

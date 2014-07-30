@@ -28,9 +28,9 @@ import jetbrains.buildServer.users.SUser;
 import jetbrains.buildServer.users.UserModel;
 import jetbrains.buildServer.util.ExceptionUtil;
 import jetbrains.buildServer.util.StringUtil;
-import mendhak.teamcity.stash.api.StashClient;
-import mendhak.teamcity.stash.ui.StashBuildFeature;
-import mendhak.teamcity.stash.ui.StashServerKeyNames;
+import mendhak.teamcity.stash.api.GraphiteClient;
+import mendhak.teamcity.stash.ui.GraphiteBuildFeature;
+import mendhak.teamcity.stash.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
@@ -126,12 +126,12 @@ public class ChangeStatusUpdater
     @NotNull
     public Handler getUpdateHandler(@NotNull final SBuildFeatureDescriptor feature)
     {
-        if (!feature.getType().equals(StashBuildFeature.FEATURE_TYPE))
+        if (!feature.getType().equals(GraphiteBuildFeature.FEATURE_TYPE))
         {
             throw new IllegalArgumentException("Unexpected feature type " + feature.getType());
         }
 
-        final StashServerKeyNames keyNames = new StashServerKeyNames();
+        final GraphiteServerKeyNames keyNames = new GraphiteServerKeyNames();
 
 
         return new Handler()
@@ -139,13 +139,13 @@ public class ChangeStatusUpdater
 
             public void scheduleChangeStarted(@NotNull String hash, @NotNull SRunningBuild build)
             {
-                scheduleChangeUpdate(hash, build, StashClient.BuildState.IN_PROGRESS);
+                scheduleChangeUpdate(hash, build, GraphiteClient.BuildState.IN_PROGRESS);
             }
 
             public void scheduleChangeCompleted(@NotNull String hash, @NotNull SRunningBuild build)
             {
-                StashClient.BuildState status = build.getStatusDescriptor().isSuccessful() ?
-                        StashClient.BuildState.SUCCESSFUL : StashClient.BuildState.FAILED;
+                GraphiteClient.BuildState status = build.getStatusDescriptor().isSuccessful() ?
+                        GraphiteClient.BuildState.SUCCESSFUL : GraphiteClient.BuildState.FAILED;
 
                 boolean failCancelledBuilds = true;// Boolean.valueOf(feature.getParameters().get(keyNames.getfailCancelledBuilds()));
 
@@ -153,7 +153,7 @@ public class ChangeStatusUpdater
                 //Makes up for lack of canceled state in Stash.
                 if(build.isInterrupted() && !failCancelledBuilds)
                 {
-                    status = StashClient.BuildState.SUCCESSFUL;
+                    status = GraphiteClient.BuildState.SUCCESSFUL;
                 }
 
 
@@ -162,7 +162,7 @@ public class ChangeStatusUpdater
 
             private void scheduleChangeUpdate(@NotNull final String hash,
                                               @NotNull final SRunningBuild build,
-                                              @NotNull final StashClient.BuildState status)
+                                              @NotNull final GraphiteClient.BuildState status)
             {
                 Logger.LogInfo("Scheduling Stash status update for hash: " + hash + ", buildId: "
                         + build.getBuildId() + ", status: " + status);
@@ -172,7 +172,7 @@ public class ChangeStatusUpdater
                     public void run()
                     {
 
-                        StashClient client = new StashClient(build.getParametersProvider().get(keyNames.getServerKey()),
+                        GraphiteClient client = new GraphiteClient(build.getParametersProvider().get(keyNames.getServerKey()),
                                 feature.getParameters().get(keyNames.getServerPort()),
                                 feature.getParameters().get(keyNames.getGraphitePrefix()));
 

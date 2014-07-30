@@ -30,7 +30,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Scanner;
 
-public class StashClient
+public class GraphiteClient
 {
 
 
@@ -38,13 +38,13 @@ public class StashClient
     private final String graphitePort;
     private final String graphitePrefix;
 
-    public StashClient()
+    public GraphiteClient()
     {
         this("127.0.0.1", "8125", "testprefix");
     }
 
 
-    public StashClient(String graphiteServer, String graphitePort, String graphitePrefix)
+    public GraphiteClient(String graphiteServer, String graphitePort, String graphitePrefix)
     {
         this.graphiteServer = graphiteServer;
         this.graphitePort = graphitePort;

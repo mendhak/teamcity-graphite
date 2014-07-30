@@ -22,8 +22,8 @@ package mendhak.teamcity.stash;
 import jetbrains.buildServer.serverSide.*;
 import jetbrains.buildServer.util.EventDispatcher;
 import jetbrains.buildServer.util.StringUtil;
-import mendhak.teamcity.stash.ui.StashBuildFeature;
-import mendhak.teamcity.stash.ui.StashServerKeyNames;
+import mendhak.teamcity.stash.ui.GraphiteBuildFeature;
+import mendhak.teamcity.stash.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 
@@ -31,7 +31,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 
 public class BuildStatusListener
@@ -39,7 +38,7 @@ public class BuildStatusListener
     @NotNull
     private final ChangeStatusUpdater updater;
 
-    final StashServerKeyNames keyNames = new StashServerKeyNames();
+    final GraphiteServerKeyNames keyNames = new GraphiteServerKeyNames();
 
     private String getGraphitePrefix()
     {
@@ -99,7 +98,7 @@ public class BuildStatusListener
 
         for (SBuildFeatureDescriptor feature : buildType.getBuildFeatures())
         {
-            if (!feature.getType().equals(StashBuildFeature.FEATURE_TYPE))
+            if (!feature.getType().equals(GraphiteBuildFeature.FEATURE_TYPE))
             {
                 continue;
             }

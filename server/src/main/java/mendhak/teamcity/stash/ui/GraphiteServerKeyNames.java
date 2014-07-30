@@ -24,7 +24,7 @@ import jetbrains.buildServer.agent.Constants;
 //If your feature.jsp has a key called ${keys.graphitePrefix},
 //the method must be getGraphitePrefix()
 
-public class StashServerKeyNames
+public class GraphiteServerKeyNames
 {
     public String getServerKey()
     {

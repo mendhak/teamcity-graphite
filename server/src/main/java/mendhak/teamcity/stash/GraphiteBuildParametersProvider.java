@@ -21,25 +21,25 @@ import jetbrains.buildServer.serverSide.SBuild;
 import jetbrains.buildServer.serverSide.SBuildFeatureDescriptor;
 import jetbrains.buildServer.serverSide.SBuildType;
 import jetbrains.buildServer.serverSide.parameters.AbstractBuildParametersProvider;
-import mendhak.teamcity.stash.ui.StashBuildFeature;
-import mendhak.teamcity.stash.ui.StashServerKeyNames;
+import mendhak.teamcity.stash.ui.GraphiteBuildFeature;
+import mendhak.teamcity.stash.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 
-public class StashBuildParametersProvider extends AbstractBuildParametersProvider {
+public class GraphiteBuildParametersProvider extends AbstractBuildParametersProvider {
     @Override
     @NotNull
     public Map<String, String> getParameters(@NotNull SBuild build, boolean emulationMode) {
         Map<String, String> parameters = super.getParameters(build,emulationMode);
 
-        final StashServerKeyNames keyNames = new StashServerKeyNames();
+        final GraphiteServerKeyNames keyNames = new GraphiteServerKeyNames();
 
         SBuildType buildType = build.getBuildType();
         if (buildType != null){
             for (SBuildFeatureDescriptor feature : buildType.getBuildFeatures()){
-                if (feature.getBuildFeature().getType().equals(StashBuildFeature.FEATURE_TYPE)){
+                if (feature.getBuildFeature().getType().equals(GraphiteBuildFeature.FEATURE_TYPE)){
 
                     ValueResolver resolver = build.getValueResolver();
 
