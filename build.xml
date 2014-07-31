@@ -10,7 +10,7 @@
       <echo message="${basedir}"/>
       <echo message="${artifact.output.plugin-zip}"/>
 
-      <copy todir="${basedir}" overwrite="true">
+      <copy todir="C:\Users\altafs\.BuildServer\plugins" overwrite="true">
           <fileset dir="${artifact.output.plugin-zip}">
               <patternset includes="*.zip" />
           </fileset>
