@@ -6,10 +6,10 @@
     </properties>
     <root id="root">
       <element id="directory" name="server">
-        <element id="archive" name="teamcity-stash-server.jar">
+        <element id="archive" name="teamcity-graphite-server.jar">
           <element id="module-output" name="server" />
         </element>
-        <element id="archive" name="teamcity-stash-resources.jar">
+        <element id="archive" name="teamcity-graphite-resources.jar">
           <element id="directory" name="buildServerResources">
             <element id="file-copy" path="$PROJECT_DIR$/server/src/main/buildServerResources/feature.jsp" />
           </element>
