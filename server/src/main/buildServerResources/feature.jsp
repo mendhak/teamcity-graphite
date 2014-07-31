@@ -58,7 +58,7 @@
   <th>Prefix<l:star/></th>
   <td>
     <props:textProperty name="${keys.graphitePrefix}" />
-    <label for="${keys.graphitePrefix}"></label>
+     <span class="error" id="error_${keys.graphitePrefix}"></span>
     <span class="smallNote">Prefix to use for metrics, eg: build.myapi</span>
   </td>
 </tr>
