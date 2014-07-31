@@ -99,6 +99,8 @@ public class GraphiteBuildFeature extends BuildFeature
 
 
                 validate(propertiesMap, keyNames.getServerKey(), "Graphite server cannot be empty", result);
+                validate(propertiesMap, keyNames.getServerPort(), "Graphite port cannot be empty", result);
+                validate(propertiesMap, keyNames.getGraphitePrefix(), "Graphite prefix cannot be empty", result);
 
                 return result;
             }

@@ -55,7 +55,7 @@
 </l:settingsGroup>
 <l:settingsGroup title="What to send">
 <tr>
-  <th>Prefix</th>
+  <th>Prefix<l:star/></th>
   <td>
     <props:textProperty name="${keys.graphitePrefix}" />
     <label for="${keys.graphitePrefix}"></label>
@@ -79,4 +79,23 @@
   </td>
 </tr>
 
+</l:settingsGroup>
+
+<l:settingsGroup title="Extras">
+<tr>
+  <th>FxCop Metrics</th>
+  <td>
+    <props:textProperty name="${keys.fxCopMetricsXml}" />
+    <label for="${keys.fxCopMetricsXml}"></label>
+    <span class="smallNote">Artifacts zip path to FxCop Metrics XML File, eg: TestResults.zip#FxCop/Metrics.xml (path-to-zip#path-within-zip)</span>
+  </td>
+</tr>
+<tr>
+  <th>OpenCover Metrics</th>
+  <td>
+    <props:textProperty name="${keys.openCoverMetricsXml}" />
+    <label for="${keys.openCoverMetricsXml}"></label>
+    <span class="smallNote">Artifacts zip path to OpenCover Summary XML file, eg: TestResults.zip#CoverageReport/Summary.xml (path-to-zip#path-within-zip)</span>
+  </td>
+</tr>
 </l:settingsGroup>

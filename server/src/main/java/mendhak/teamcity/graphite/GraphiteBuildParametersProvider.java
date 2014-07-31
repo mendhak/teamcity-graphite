@@ -67,6 +67,17 @@ public class GraphiteBuildParametersProvider extends AbstractBuildParametersProv
                     }
                     parameters.put(keyNames.getUseUdp(), getUseUdp);
 
+                    String fxCopMetricsXml = "";
+                    if(feature.getParameters().get(keyNames.getFxCopMetricsXml()) != null){
+                        fxCopMetricsXml = resolver.resolve(feature.getParameters().get(keyNames.getFxCopMetricsXml())).getResult();
+                    }
+                    parameters.put(keyNames.getFxCopMetricsXml(), fxCopMetricsXml);
+
+                    String openCoverXml = "";
+                    if(feature.getParameters().get(keyNames.getOpenCoverMetricsXml()) != null){
+                        openCoverXml = resolver.resolve(feature.getParameters().get(keyNames.getOpenCoverMetricsXml())).getResult();
+                    }
+                    parameters.put(keyNames.getOpenCoverMetricsXml(), openCoverXml);
                 }
             }
         }

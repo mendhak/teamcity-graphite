@@ -19,6 +19,7 @@
 package mendhak.teamcity.graphite;
 
 
+import com.intellij.openapi.util.text.StringUtil;
 import jetbrains.buildServer.serverSide.*;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifactsViewMode;
 import jetbrains.buildServer.util.EventDispatcher;
@@ -29,6 +30,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.rmi.CORBA.Util;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -72,7 +74,6 @@ public class BuildStatusListener
                     GraphiteMetric metric = new GraphiteMetric( "started", "1", System.currentTimeMillis()/1000 );
                     h.scheduleBuildMetric(build, metric);
                 }
-
             }
 
             @Override
@@ -86,107 +87,122 @@ public class BuildStatusListener
                 }
 
 
+                String fxCopXmlPath = build.getParametersProvider().get(keyNames.getFxCopMetricsXml());
+
                 //FxCop Metrics
-                try
+                if(!StringUtil.isEmptyOrSpaces(fxCopXmlPath) && fxCopXmlPath.contains("#"))
                 {
+                    String fxCopZip = fxCopXmlPath.split("#")[0];
+                    String fxCopXml = fxCopXmlPath.split("#")[1];
 
-                    ZipFile zip =  new ZipFile(new File(build.getArtifactsDirectory(),
-                            build.getArtifacts(BuildArtifactsViewMode.VIEW_ALL_WITH_ARCHIVES_CONTENT).findArtifact("TestResults.zip").getArtifact().getRelativePath()), StandardCharsets.UTF_8);
-                    ZipEntry entry =  zip.getEntry("FxCop/Metrics.xml");
-                    InputStream zis =  zip.getInputStream(entry);
-
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder parser = factory.newDocumentBuilder();
-                    Document dc= parser.parse(zis);
-
-                    XPathFactory xPathFactory = XPathFactory.newInstance();
-                    XPath xpath = xPathFactory.newXPath();
-                    XPathExpression expr = xpath.compile("//Module/Metrics/Metric");
-                    NodeList metricNodes = (NodeList) expr.evaluate(dc, XPathConstants.NODESET);
-
-                    for(int i=0; i<metricNodes.getLength(); i++)
+                    try
                     {
-                        if(metricNodes.item(i).getParentNode().getParentNode().getNodeName().equalsIgnoreCase("Module"))
+                        ZipFile zip =  new ZipFile(new File(build.getArtifactsDirectory(),
+                                build.getArtifacts(BuildArtifactsViewMode.VIEW_ALL_WITH_ARCHIVES_CONTENT).findArtifact(fxCopZip).getArtifact().getRelativePath()), StandardCharsets.UTF_8);
+                        ZipEntry entry =  zip.getEntry(fxCopXml);
+                        InputStream zis =  zip.getInputStream(entry);
+
+                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                        DocumentBuilder parser = factory.newDocumentBuilder();
+                        Document dc= parser.parse(zis);
+
+                        XPathFactory xPathFactory = XPathFactory.newInstance();
+                        XPath xpath = xPathFactory.newXPath();
+                        XPathExpression expr = xpath.compile("//Module/Metrics/Metric");
+                        NodeList metricNodes = (NodeList) expr.evaluate(dc, XPathConstants.NODESET);
+
+                        for(int i=0; i<metricNodes.getLength(); i++)
                         {
-                            String moduleName = metricNodes.item(i).getParentNode().getParentNode().getAttributes().getNamedItem("Name").getNodeValue();
-                            String metricName = metricNodes.item(i).getAttributes().getNamedItem("Name").getNodeValue();
-                            String metricValue = metricNodes.item(i).getAttributes().getNamedItem("Value").getNodeValue();
-                            h.scheduleBuildMetric(build, new GraphiteMetric("fxcop." + moduleName + "." + metricName, metricValue, System.currentTimeMillis()/1000));
+                            if(metricNodes.item(i).getParentNode().getParentNode().getNodeName().equalsIgnoreCase("Module"))
+                            {
+                                String moduleName = metricNodes.item(i).getParentNode().getParentNode().getAttributes().getNamedItem("Name").getNodeValue();
+                                String metricName = metricNodes.item(i).getAttributes().getNamedItem("Name").getNodeValue();
+                                String metricValue = metricNodes.item(i).getAttributes().getNamedItem("Value").getNodeValue();
+                                h.scheduleBuildMetric(build, new GraphiteMetric("fxcop." + moduleName + "." + metricName, metricValue, System.currentTimeMillis()/1000));
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
 
-                //OpenCover
-                try
+                String openCoverPath = build.getParametersProvider().get(keyNames.getOpenCoverMetricsXml());
+
+                //FxCop Metrics
+                if(!StringUtil.isEmptyOrSpaces(openCoverPath) && openCoverPath.contains("#"))
                 {
+                    String openCoverZip = openCoverPath.split("#")[0];
+                    String openCoverXml = openCoverPath.split("#")[1];
 
-                    ZipFile zip =  new ZipFile(new File(build.getArtifactsDirectory(),
-                            build.getArtifacts(BuildArtifactsViewMode.VIEW_ALL_WITH_ARCHIVES_CONTENT).findArtifact("TestResults.zip").getArtifact().getRelativePath()), StandardCharsets.UTF_8);
-                    ZipEntry entry =  zip.getEntry("CoverageReport/Summary.xml");
-                    InputStream zis =  zip.getInputStream(entry);
-
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder parser = factory.newDocumentBuilder();
-                    Document dc= parser.parse(zis);
-
-                    XPathFactory xPathFactory = XPathFactory.newInstance();
-                    XPath xpath = xPathFactory.newXPath();
-                    XPathExpression expr = xpath.compile("/CoverageReport/Summary");
-                    Node summaryNode = (Node) expr.evaluate(dc, XPathConstants.NODE);
-
-                    int i;
-                    for(i=0;i<summaryNode.getChildNodes().getLength(); i++)
+                    //OpenCover
+                    try
                     {
-                        if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Assemblies"))
-                        {
-                            String val = summaryNode.getChildNodes().item(i).getTextContent();
-                            h.scheduleBuildMetric(build, new GraphiteMetric("opencover.assemblies",val,System.currentTimeMillis()/1000));
-                        }
+                        ZipFile zip =  new ZipFile(new File(build.getArtifactsDirectory(),
+                                build.getArtifacts(BuildArtifactsViewMode.VIEW_ALL_WITH_ARCHIVES_CONTENT).findArtifact(openCoverZip).getArtifact().getRelativePath()), StandardCharsets.UTF_8);
+                        ZipEntry entry =  zip.getEntry(openCoverXml);
+                        InputStream zis =  zip.getInputStream(entry);
 
-                        if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Classes"))
-                        {
-                            String val = summaryNode.getChildNodes().item(i).getTextContent();
-                            h.scheduleBuildMetric(build, new GraphiteMetric("opencover.classes",val,System.currentTimeMillis()/1000));
-                        }
+                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                        DocumentBuilder parser = factory.newDocumentBuilder();
+                        Document dc= parser.parse(zis);
 
-                        if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Files"))
-                        {
-                            String val = summaryNode.getChildNodes().item(i).getTextContent();
-                            h.scheduleBuildMetric(build, new GraphiteMetric("opencover.files",val,System.currentTimeMillis()/1000));
-                        }
+                        XPathFactory xPathFactory = XPathFactory.newInstance();
+                        XPath xpath = xPathFactory.newXPath();
+                        XPathExpression expr = xpath.compile("/CoverageReport/Summary");
+                        Node summaryNode = (Node) expr.evaluate(dc, XPathConstants.NODE);
 
-                        if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Coveredlines"))
+                        int i;
+                        for(i=0;i<summaryNode.getChildNodes().getLength(); i++)
                         {
-                            String val = summaryNode.getChildNodes().item(i).getTextContent();
-                            h.scheduleBuildMetric(build, new GraphiteMetric("opencover.coveredlines",val,System.currentTimeMillis()/1000));
-                        }
+                            if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Assemblies"))
+                            {
+                                String val = summaryNode.getChildNodes().item(i).getTextContent();
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.assemblies",val,System.currentTimeMillis()/1000));
+                            }
 
-                        if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Uncoveredlines"))
-                        {
-                            String val = summaryNode.getChildNodes().item(i).getTextContent();
-                            h.scheduleBuildMetric(build, new GraphiteMetric("opencover.uncoveredlines",val,System.currentTimeMillis()/1000));
-                        }
+                            if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Classes"))
+                            {
+                                String val = summaryNode.getChildNodes().item(i).getTextContent();
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.classes",val,System.currentTimeMillis()/1000));
+                            }
 
-                        if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Coverablelines"))
-                        {
-                            String val = summaryNode.getChildNodes().item(i).getTextContent();
-                            h.scheduleBuildMetric(build, new GraphiteMetric("opencover.coverablelines",val,System.currentTimeMillis()/1000));
-                        }
+                            if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Files"))
+                            {
+                                String val = summaryNode.getChildNodes().item(i).getTextContent();
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.files",val,System.currentTimeMillis()/1000));
+                            }
+
+                            if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Coveredlines"))
+                            {
+                                String val = summaryNode.getChildNodes().item(i).getTextContent();
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.coveredlines",val,System.currentTimeMillis()/1000));
+                            }
+
+                            if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Uncoveredlines"))
+                            {
+                                String val = summaryNode.getChildNodes().item(i).getTextContent();
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.uncoveredlines",val,System.currentTimeMillis()/1000));
+                            }
+
+                            if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Coverablelines"))
+                            {
+                                String val = summaryNode.getChildNodes().item(i).getTextContent();
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.coverablelines",val,System.currentTimeMillis()/1000));
+                            }
 
 
-                        if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Totallines"))
-                        {
-                            String val = summaryNode.getChildNodes().item(i).getTextContent();
-                            h.scheduleBuildMetric(build, new GraphiteMetric("opencover.totallines",val,System.currentTimeMillis()/1000));
+                            if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Totallines"))
+                            {
+                                String val = summaryNode.getChildNodes().item(i).getTextContent();
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.totallines",val,System.currentTimeMillis()/1000));
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+
             }
-
 
 
             @Override

@@ -55,4 +55,14 @@ public class GraphiteServerKeyNames
         return "graphite_useudp";
     }
 
+    public String getFxCopMetricsXml()
+    {
+        return "graphite_fxcopxml";
+    }
+
+    public String getOpenCoverMetricsXml()
+    {
+        return "graphite_opencoverxml";
+    }
+
 }
