@@ -73,7 +73,7 @@ public class GraphiteClient
                                 DatagramSocket sock   = new DatagramSocket();
                                 InetAddress addr      = InetAddress.getByName(host);
                                 // "xyz.abc.def:1|c"
-                                byte[] message        = String.format("%s:%s|c", metricPrefix + "." + metric.getName() , metric.getValue()).getBytes();
+                                byte[] message        = String.format("%s:%s|c", metricPrefix + "." + metric.getName() , metric.getValue()).toLowerCase().getBytes();
                                 DatagramPacket packet = new DatagramPacket(message, message.length, addr, port);
                                 sock.send(packet);
                                 sock.close();
@@ -83,7 +83,7 @@ public class GraphiteClient
                                 //TCP
                                 Socket socket = new Socket(host, port);
                                 PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
-                                outputStream.println(String.format("%s %s %s", metricPrefix + "." + metric.getName(), metric.getValue(), metric.getTimestamp()));
+                                outputStream.println(String.format("%s %s %s", metricPrefix + "." + metric.getName(), metric.getValue(), metric.getTimestamp()).toLowerCase());
 
                                 outputStream.close();
                                 socket.close();
