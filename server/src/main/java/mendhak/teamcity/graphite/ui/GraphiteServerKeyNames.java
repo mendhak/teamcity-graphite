@@ -50,14 +50,9 @@ public class GraphiteServerKeyNames
         return "graphite_buildfinished";
     }
 
-    public String getVCSIgnoreKey()
+    public String getUseUdp()
     {
-        return "stash_vcsignorecsv";
+        return "graphite_useudp";
     }
-
-
-
-
-
 
 }

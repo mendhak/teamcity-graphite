@@ -46,8 +46,27 @@ public class GraphiteBuildParametersProvider extends AbstractBuildParametersProv
                     parameters.put(keyNames.getServerKey(), resolver.resolve(feature.getParameters().get(keyNames.getServerKey())).getResult());
                     parameters.put(keyNames.getServerPort(), resolver.resolve(feature.getParameters().get(keyNames.getServerPort())).getResult());
                     parameters.put(keyNames.getGraphitePrefix(), resolver.resolve(feature.getParameters().get(keyNames.getGraphitePrefix())).getResult());
-                    parameters.put(keyNames.getSendBuildStarted(), resolver.resolve(feature.getParameters().get(keyNames.getSendBuildStarted())).getResult());
-                    parameters.put(keyNames.getSendBuildFinished(), resolver.resolve(feature.getParameters().get(keyNames.getSendBuildFinished())).getResult());
+
+                    String sendBuildStarted = "false";
+                    if(feature.getParameters().get(keyNames.getSendBuildStarted()) != null)
+                    {
+                        sendBuildStarted = resolver.resolve(feature.getParameters().get(keyNames.getSendBuildStarted())).getResult();
+                    }
+                    parameters.put(keyNames.getSendBuildStarted(), sendBuildStarted);
+
+                    String sendBuildFinished = "false";
+                    if(feature.getParameters().get(keyNames.getSendBuildFinished()) != null)
+                    {
+                        sendBuildFinished = resolver.resolve(feature.getParameters().get(keyNames.getSendBuildFinished())).getResult();
+                    }
+                    parameters.put(keyNames.getSendBuildFinished(), sendBuildFinished);
+
+                    String getUseUdp = "false";
+                    if(feature.getParameters().get(keyNames.getUseUdp()) != null){
+                         getUseUdp = resolver.resolve(feature.getParameters().get(keyNames.getUseUdp())).getResult();
+                    }
+                    parameters.put(keyNames.getUseUdp(), getUseUdp);
+
                 }
             }
         }

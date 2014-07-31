@@ -39,42 +39,44 @@
   <td>
     <props:textProperty name="${keys.serverPort}" className="longField"/>
     <span class="error" id="error_${keys.serverPort}"></span>
-    <span class="smallNote">Specify Graphite Port for TCP connections</span>
+    <span class="smallNote">Specify Graphite/StatsD Port (eg. 2003, 8125)</span>
+  </td>
+</tr>
+
+<tr>
+  <th>Use UDP</th>
+  <td>
+    <props:checkboxProperty name="${keys.useUdp}" />
+    <label for="${keys.useUdp}">Check for UDP, uncheck for TCP</label>
+    <span class="smallNote"> </span>
   </td>
 </tr>
 
 </l:settingsGroup>
 <l:settingsGroup title="What to send">
 <tr>
-  <th>Prefix:</th>
+  <th>Prefix</th>
   <td>
     <props:textProperty name="${keys.graphitePrefix}" />
-    <label for="${keys.graphitePrefix}">Prefix to use for metrics</label>
-    <span class="smallNote">build.myapi, for example</span>
+    <label for="${keys.graphitePrefix}"></label>
+    <span class="smallNote">Prefix to use for metrics, eg: build.myapi</span>
   </td>
 </tr>
 <tr>
-  <th>Send Build Start:</th>
+  <th>Send Build Start</th>
   <td>
     <props:checkboxProperty name="${keys.sendBuildStarted}" />
-    <label for="${keys.sendBuildStarted}">Sends indicator that build has started</label>
+    <label for="${keys.sendBuildStarted}">Send 'started' metric</label>
     <span class="smallNote"> </span>
   </td>
 </tr>
 <tr>
-  <th>Send Build Finished:</th>
+  <th>Send Build Finished</th>
   <td>
     <props:checkboxProperty name="${keys.sendBuildFinished}" />
-    <label for="${keys.sendBuildFinished}">Sends indicator that build has finished</label>
+    <label for="${keys.sendBuildFinished}">Send 'finished' metric</label>
     <span class="smallNote"> </span>
   </td>
 </tr>
-<tr>
-  <th>...:</th>
-  <td>
-    <props:textProperty name="${keys.VCSIgnoreKey}" className="longField"/>
-    <span class="error" id="error_${keys.VCSIgnoreKey}"></span>
-    <span class="smallNote">(Optional) VCS root names to ignore, comma separated</span>
-  </td>
-</tr>
+
 </l:settingsGroup>

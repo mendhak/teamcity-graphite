@@ -23,6 +23,9 @@ import jetbrains.buildServer.serverSide.executors.ExecutorServices;
 import mendhak.teamcity.graphite.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
@@ -59,16 +62,32 @@ public class GraphiteClient
                     public void run() {
                         try {
 
+                            boolean useUdp = Boolean.valueOf(build.getParametersProvider().get(keyNames.getUseUdp()));
                             String host = build.getParametersProvider().get(keyNames.getServerKey());
                             int port = Integer.valueOf(build.getParametersProvider().get(keyNames.getServerPort()));
                             String metricPrefix = build.getParametersProvider().get(keyNames.getGraphitePrefix());
 
-                            Socket socket = new Socket(host, port);
-                            PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
-                            outputStream.println(String.format("%s %s %s", metricPrefix + "." + metric.getName(), metric.getValue(), metric.getTimestamp()));
+                            if(useUdp)
+                            {
+                                //UDP
+                                DatagramSocket sock   = new DatagramSocket();
+                                InetAddress addr      = InetAddress.getByName(host);
+                                // "xyz.abc.def:1|c"
+                                byte[] message        = String.format("%s:%s|c", metricPrefix + "." + metric.getName() , metric.getValue()).getBytes();
+                                DatagramPacket packet = new DatagramPacket(message, message.length, addr, port);
+                                sock.send(packet);
+                                sock.close();
+                            }
+                            else
+                            {
+                                //TCP
+                                Socket socket = new Socket(host, port);
+                                PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
+                                outputStream.println(String.format("%s %s %s", metricPrefix + "." + metric.getName(), metric.getValue(), metric.getTimestamp()));
 
-                            outputStream.close();
-                            socket.close();
+                                outputStream.close();
+                                socket.close();
+                            }
                         } catch (Exception e) {
                             Logger.LogError("Could not send packet to Graphite", e);
                         }
