@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Teamcity-graphite by mendhak</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Teamcity-graphite</h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/mendhak/teamcity-graphite">View the Project on GitHub <small>mendhak/teamcity-graphite</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/mendhak/teamcity-graphite/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/mendhak/teamcity-graphite/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/mendhak/teamcity-graphite">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="teamcity-graphite-integration" class="anchor" href="#teamcity-graphite-integration"><span class="octicon octicon-link"></span></a>TeamCity Graphite Integration</h1>
+
+<p>This TeamCity plugin will send build stats and metrics to Graphite.  You can send things such as <code>started</code>, <code>finished</code>, various code coverage stats, step durations, test metrics.  The actual metrics will vary depending on your build. This can also send FxCop and OpenCover metrics.</p>
+
+<h1>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h1>
+
+<p>Download the <a href="https://github.com/mendhak/teamcity-graphite/blob/develop/teamcity.graphite.zip?raw=true">.zip file</a> and place it in the <code>&lt;TeamCity data directory&gt;/plugins</code> folder, then restart TeamCity.</p>
+
+<h1>
+<a name="set-up" class="anchor" href="#set-up"><span class="octicon octicon-link"></span></a>Set-up</h1>
+
+<p>Choose to add a build feature and from the dropdown, select <code>Send metrics to Graphite</code></p>
+
+<p><img src="http://code.mendhak.com/teamcity-graphite/teamcity.graphite.1.png" alt="step1"></p>
+
+<p>Fill in your Graphite server values and metric specs</p>
+
+<p><img src="http://code.mendhak.com/teamcity-graphite/teamcity.graphite.2.png" alt="step2"></p>
+
+<p>For FxCop and OpenCover metrics, you will need to ensure that their resulting XML files are packaged into a resulting zip file as part of a build artifact. </p>
+
+<p>If you deploy using TeamCity, then the <code>started</code> and <code>finished</code> metrics will be useful for that particular build configuration, as you can use Graphite's <a href="http://graphite.readthedocs.org/en/1.0/functions.html#graphite.render.functions.drawAsInfinite"><code>drawAsInfinite</code></a> function.  </p>
+
+<p>You can choose to whitelist branch names.  Specify a set of comma separated words.  If the branch name being built contains any of those words, the metrics will be reported to Graphite, else they will be discarded.  This is useful if you only want to report on develop, master and release branches but not feature branches.</p>
+
+<h1>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
+
+<p>GPL v2</p>
+
+<hr><h1>
+<a name="code-setup" class="anchor" href="#code-setup"><span class="octicon octicon-link"></span></a>Code setup</h1>
+
+<p>You will need <a href="http://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> as this project uses IDEA features to build artifacts.</p>
+
+<p>You will also need to download and extract <a href="http://www.jetbrains.com/teamcity/download/">TeamCity</a> which provides the required jars.  Be sure to download the Linux <code>.tar.gz</code> which contains the libraries.  </p>
+
+<p>Open the project in Intellij IDEA, you should see a lot of unresolved references, this is normal.</p>
+
+<p>Go to <code>File | Settings | Path Variables</code> and set the <code>TeamCityDistribution</code> variable, pointing it to your TeamCity location.  IntelliJ will pick up the various jars and the unresolved references will resolve.</p>
+
+<p>To <strong>build</strong> the project, click <code>Build | Build Artifacts...</code> and choose <code>plugin-zip</code>.  The .zip is generated in <code>/out/artifacts/plugin_zip</code>.</p>
+
+<h1>
+<a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting</h1>
+
+<p>If the plugin doesn't seem to be working, you can find plugin messages in the <code>catalina.out</code> file under your TeamCity installation. (Example: <code>/TeamCity/logs/catalina.out</code>)
+This usually gives you a good idea of why a call may have failed.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/mendhak">mendhak</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
