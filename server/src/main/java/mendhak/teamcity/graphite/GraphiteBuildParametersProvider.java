@@ -78,6 +78,12 @@ public class GraphiteBuildParametersProvider extends AbstractBuildParametersProv
                         openCoverXml = resolver.resolve(feature.getParameters().get(keyNames.getOpenCoverMetricsXml())).getResult();
                     }
                     parameters.put(keyNames.getOpenCoverMetricsXml(), openCoverXml);
+
+                    String whiteListBranches = "";
+                    if(feature.getParameters().get(keyNames.getWhitelistBranches()) != null){
+                        whiteListBranches = resolver.resolve(feature.getParameters().get(keyNames.getWhitelistBranches())).getResult();
+                    }
+                    parameters.put(keyNames.getWhitelistBranches(), whiteListBranches);
                 }
             }
         }

@@ -62,19 +62,23 @@ public class BuildStatusListener
             return true;
         }
 
-        String whitelistedBranchesCsv = "yal,run";
-        if(!StringUtil.isEmptyOrSpaces(whitelistedBranchesCsv))
-        {
-            String[] whiteListedBranches = whitelistedBranchesCsv.split(",");
+        String whitelistedBranchesCsv = build.getParametersProvider().get(keyNames.getWhitelistBranches());
 
-            for(String whitelist : whiteListedBranches)
+        if(StringUtil.isEmptyOrSpaces(whitelistedBranchesCsv))
+        {
+            return true;
+        }
+
+        String[] whiteListedBranches = whitelistedBranchesCsv.split(",");
+
+        for(String whitelist : whiteListedBranches)
+        {
+            if(build.getBranch().getDisplayName().contains(whitelist))
             {
-                if(build.getBranch().getDisplayName().contains(whitelist))
-                {
-                    return true;
-                }
+                return true;
             }
         }
+
         return false;
     }
 

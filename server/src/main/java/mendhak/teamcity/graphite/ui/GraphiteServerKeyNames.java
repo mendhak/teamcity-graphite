@@ -65,4 +65,9 @@ public class GraphiteServerKeyNames
         return "graphite_opencoverxml";
     }
 
+    public String getWhitelistBranches ()
+    {
+        return "graphite_whitelistbranches";
+    }
+
 }

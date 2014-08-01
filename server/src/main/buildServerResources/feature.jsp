@@ -83,6 +83,14 @@
 
 <l:settingsGroup title="Extras">
 <tr>
+    <th>Whitelisted branches</th>
+    <td>
+        <props:textProperty name="${keys.whitelistBranches}" />
+        <label for="${keys.whitelistBranches}"></label>
+        <span class="smallNote">(Comma separated list) If the branch name contains any of these words, the metrics will be reported on, else ignored; eg <em>ast</em> will match <em>master</em> and <em>rel</em> will match <em>release-29.1</em>. Leave blank for all branches.</span>
+    </td>
+</tr>
+<tr>
   <th>FxCop Metrics</th>
   <td>
     <props:textProperty name="${keys.fxCopMetricsXml}" />
