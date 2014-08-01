@@ -55,6 +55,28 @@ public class BuildStatusListener
 
     final GraphiteServerKeyNames keyNames = new GraphiteServerKeyNames();
 
+    private boolean isValidBranch(SBuild build)
+    {
+        if(build.getBranch() == null)
+        {
+            return true;
+        }
+
+        String whitelistedBranchesCsv = "yal,run";
+        if(!StringUtil.isEmptyOrSpaces(whitelistedBranchesCsv))
+        {
+            String[] whiteListedBranches = whitelistedBranchesCsv.split(",");
+
+            for(String whitelist : whiteListedBranches)
+            {
+                if(build.getBranch().getDisplayName().contains(whitelist))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public BuildStatusListener(@NotNull final EventDispatcher<BuildServerListener> listener,
                                @NotNull final GraphiteClient graphiteClient)
@@ -68,6 +90,9 @@ public class BuildStatusListener
             @Override
             public void changesLoaded(SRunningBuild build)
             {
+
+                if(!isValidBranch(build)) { return; }
+
                 boolean sendStarted = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildStarted()));
 
                 if(sendStarted){
@@ -80,6 +105,8 @@ public class BuildStatusListener
             @Override
             public void buildFinished(SRunningBuild build)
             {
+                if(!isValidBranch(build)) { return; }
+
                 boolean sendFinished = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildFinished()));
 
                 if(sendFinished){
@@ -221,12 +248,16 @@ public class BuildStatusListener
             @Override
             public void buildInterrupted(SRunningBuild build)
             {
+                if(!isValidBranch(build)) { return; }
 
             }
 
             @Override
             public void statisticValuePublished(@NotNull SBuild build, @NotNull String valueTypeKey, @NotNull BigDecimal value) {
                 super.statisticValuePublished(build, valueTypeKey, value);
+
+                if(!isValidBranch(build)) { return; }
+
                 GraphiteMetric metric = new GraphiteMetric( valueTypeKey.replace(":","."), String.valueOf(value), System.currentTimeMillis()/1000);
 
                 h.scheduleBuildMetric(build, metric);
