@@ -25,6 +25,32 @@ If you deploy using TeamCity, then the `started` and `finished` metrics will be 
 
 You can choose to whitelist branch names.  Specify a set of comma separated words.  If the branch name being built contains any of those words, the metrics will be reported to Graphite, else they will be discarded.  This is useful if you only want to report on develop, master and release branches but not feature branches.
 
+# License
+
+GPL v2
+
+
+______________
+
+
+# Code setup
+
+You will need [IntelliJ IDEA](http://www.jetbrains.com/idea/download/) as this project uses IDEA features to build artifacts.
+
+You will also need to download and extract [TeamCity](http://www.jetbrains.com/teamcity/download/) which provides the required jars.  Be sure to download the Linux `.tar.gz` which contains the libraries.  
+
+Open the project in Intellij IDEA, you should see a lot of unresolved references, this is normal.
+
+Go to `File | Settings | Path Variables` and set the `TeamCityDistribution` variable, pointing it to your TeamCity location.  IntelliJ will pick up the various jars and the unresolved references will resolve.
+
+To **build** the project, click `Build | Build Artifacts...` and choose `plugin-zip`.  The .zip is generated in `/out/artifacts/plugin_zip`.
+
+
+# Troubleshooting
+
+If the plugin doesn't seem to be working, you can find plugin messages in the `catalina.out` file under your TeamCity installation. (Example: `/TeamCity/logs/catalina.out`)
+This usually gives you a good idea of why a call may have failed.
+
 
 
 
