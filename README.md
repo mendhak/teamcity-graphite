@@ -4,11 +4,13 @@ TeamCity Graphite Integration
 
 This TeamCity plugin will send build stats and metrics to Graphite.  You can send things such as `started`, `finished`, various code coverage stats, step durations, test metrics.  The actual metrics will vary depending on your build. This can also send FxCop and OpenCover metrics.
 
-Works with TeamCity 8
+
 
 # Install
 
 Download the [.zip file](https://github.com/mendhak/teamcity-graphite/blob/develop/teamcity.graphite.zip?raw=true) and place it in the `<TeamCity data directory>/plugins` folder, then restart TeamCity.
+
+Tested with TeamCity 8+.  If this works for you on an earlier version, please let me know.
 
 # Set-up
 
