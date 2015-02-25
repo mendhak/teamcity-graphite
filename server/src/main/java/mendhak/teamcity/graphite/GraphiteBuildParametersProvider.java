@@ -63,9 +63,15 @@ public class GraphiteBuildParametersProvider extends AbstractBuildParametersProv
 
                     String getUseUdp = "false";
                     if(feature.getParameters().get(keyNames.getUseUdp()) != null){
-                         getUseUdp = resolver.resolve(feature.getParameters().get(keyNames.getUseUdp())).getResult();
+                        getUseUdp = resolver.resolve(feature.getParameters().get(keyNames.getUseUdp())).getResult();
                     }
                     parameters.put(keyNames.getUseUdp(), getUseUdp);
+
+                    String getSendTimers = "false";
+                    if(feature.getParameters().get(keyNames.getSendTimers()) != null){
+                        getSendTimers = resolver.resolve(feature.getParameters().get(keyNames.getSendTimers())).getResult();
+                    }
+                    parameters.put(keyNames.getSendTimers(), getSendTimers);
 
                     String fxCopMetricsXml = "";
                     if(feature.getParameters().get(keyNames.getFxCopMetricsXml()) != null){

@@ -55,6 +55,11 @@ public class GraphiteServerKeyNames
         return "graphite_useudp";
     }
 
+    public String getSendTimers()
+    {
+        return "graphite_sendtimers";
+    }
+
     public String getFxCopMetricsXml()
     {
         return "graphite_fxcopxml";

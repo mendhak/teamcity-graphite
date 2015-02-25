@@ -44,10 +44,10 @@
 </tr>
 
 <tr>
-  <th>Use UDP</th>
+  <th>Use StatsD via UDP</th>
   <td>
     <props:checkboxProperty name="${keys.useUdp}" />
-    <label for="${keys.useUdp}">Check for UDP, uncheck for TCP</label>
+    <label for="${keys.useUdp}">Check for StatsD (UDP), uncheck for Graphite (TCP)</label>
     <span class="smallNote"> </span>
   </td>
 </tr>
@@ -58,8 +58,16 @@
   <th>Prefix<l:star/></th>
   <td>
     <props:textProperty name="${keys.graphitePrefix}" />
-     <span class="error" id="error_${keys.graphitePrefix}"></span>
+    <span class="error" id="error_${keys.graphitePrefix}"></span>
     <span class="smallNote">Prefix to use for metrics, eg: build.myapi</span>
+  </td>
+</tr>
+<tr>
+  <th>Send timing data as timers (StatsD only)</th>
+  <td>
+    <props:checkboxProperty name="${keys.sendTimers}" />
+    <label for="${keys.sendTimers}">Check to use timers, uncheck to use counters</label>
+    <span class="smallNote">Timing data (e.g. build checkout time, time spent in queue) can be sent as StatsD timers. Keep unchecked to send all data as counters. The setting is ignored when sending data to Graphite (TCP).</span>
   </td>
 </tr>
 <tr>

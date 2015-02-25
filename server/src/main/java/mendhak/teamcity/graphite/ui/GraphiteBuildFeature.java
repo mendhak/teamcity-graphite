@@ -118,6 +118,7 @@ public class GraphiteBuildFeature extends BuildFeature
         map.put(new GraphiteServerKeyNames().getSendBuildStarted(), "true");
         map.put(new GraphiteServerKeyNames().getSendBuildFinished(), "true");
         map.put(new GraphiteServerKeyNames().getUseUdp(), "true");
+        map.put(new GraphiteServerKeyNames().getSendTimers(), "false");
         return map;
     }
 

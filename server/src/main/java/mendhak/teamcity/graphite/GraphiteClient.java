@@ -69,18 +69,20 @@ public class GraphiteClient
 
                             if(useUdp)
                             {
-                                //UDP
-                                DatagramSocket sock   = new DatagramSocket();
-                                InetAddress addr      = InetAddress.getByName(host);
-                                // "xyz.abc.def:1|c"
-                                byte[] message        = String.format("%s:%s|c", metricPrefix + "." + metric.getName() , metric.getValue()).toLowerCase().getBytes();
-                                DatagramPacket packet = new DatagramPacket(message, message.length, addr, port);
+                                // StatsD over UDP
+                                boolean sendTimers      = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendTimers()));
+                                DatagramSocket sock     = new DatagramSocket();
+                                InetAddress addr        = InetAddress.getByName(host);
+                                // "xyz.abc.def:1|c" or "xyz.abc.def:1000|ms"
+                                String metricTypeSuffix = sendTimers && metric.isTimer() ? "ms" : "c";
+                                byte[] message          = String.format("%s:%s|%s", metricPrefix + "." + metric.getName() , metric.getValue(), metricTypeSuffix).toLowerCase().getBytes();
+                                DatagramPacket packet   = new DatagramPacket(message, message.length, addr, port);
                                 sock.send(packet);
                                 sock.close();
                             }
                             else
                             {
-                                //TCP
+                                // Graphite over TCP
                                 Socket socket = new Socket(host, port);
                                 PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
                                 outputStream.println(String.format("%s %s %s", metricPrefix + "." + metric.getName(), metric.getValue(), metric.getTimestamp()).toLowerCase());

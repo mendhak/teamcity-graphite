@@ -100,7 +100,7 @@ public class BuildStatusListener
                 boolean sendStarted = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildStarted()));
 
                 if(sendStarted){
-                    GraphiteMetric metric = new GraphiteMetric( "started", "1", System.currentTimeMillis()/1000 );
+                    GraphiteMetric metric = new GraphiteMetric( "started", "1", System.currentTimeMillis()/1000, true);
                     Logger.LogInfo("started");
                     h.scheduleBuildMetric(build, metric);
                 }
@@ -114,7 +114,7 @@ public class BuildStatusListener
                 boolean sendFinished = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildFinished()));
 
                 if(sendFinished){
-                    GraphiteMetric metric = new GraphiteMetric( "finished", String.valueOf(build.getDuration()), System.currentTimeMillis()/1000 );
+                    GraphiteMetric metric = new GraphiteMetric( "finished", String.valueOf(build.getDuration()), System.currentTimeMillis()/1000, true);
                     Logger.LogInfo("finished");
                     h.scheduleBuildMetric(build, metric);
                 }
@@ -153,7 +153,7 @@ public class BuildStatusListener
                                 String metricName = metricNodes.item(i).getAttributes().getNamedItem("Name").getNodeValue();
                                 String metricValue = metricNodes.item(i).getAttributes().getNamedItem("Value").getNodeValue();
                                 Logger.LogInfo("fxcop." + moduleName + "." + metricName + ":" + metricValue);
-                                h.scheduleBuildMetric(build, new GraphiteMetric("fxcop." + moduleName + "." + metricName, metricValue, System.currentTimeMillis()/1000));
+                                h.scheduleBuildMetric(build, new GraphiteMetric("fxcop." + moduleName + "." + metricName, metricValue, System.currentTimeMillis()/1000, false));
                             }
                         }
                     } catch (Exception e) {
@@ -194,42 +194,42 @@ public class BuildStatusListener
                             {
                                 String val = summaryNode.getChildNodes().item(i).getTextContent();
                                 Logger.LogInfo("opencover.assemblies:" + val);
-                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.assemblies",val,System.currentTimeMillis()/1000));
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.assemblies",val,System.currentTimeMillis()/1000, false));
                             }
 
                             if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Classes"))
                             {
                                 String val = summaryNode.getChildNodes().item(i).getTextContent();
                                 Logger.LogInfo("opencover.classes:" + val);
-                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.classes",val,System.currentTimeMillis()/1000));
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.classes",val,System.currentTimeMillis()/1000, false));
                             }
 
                             if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Files"))
                             {
                                 String val = summaryNode.getChildNodes().item(i).getTextContent();
                                 Logger.LogInfo("opencover.files:" + val);
-                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.files",val,System.currentTimeMillis()/1000));
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.files",val,System.currentTimeMillis()/1000, false));
                             }
 
                             if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Coveredlines"))
                             {
                                 String val = summaryNode.getChildNodes().item(i).getTextContent();
                                 Logger.LogInfo("opencover.coveredlines:" + val);
-                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.coveredlines",val,System.currentTimeMillis()/1000));
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.coveredlines",val,System.currentTimeMillis()/1000, false));
                             }
 
                             if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Uncoveredlines"))
                             {
                                 String val = summaryNode.getChildNodes().item(i).getTextContent();
                                 Logger.LogInfo("opencover.uncoveredlines:" + val);
-                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.uncoveredlines",val,System.currentTimeMillis()/1000));
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.uncoveredlines",val,System.currentTimeMillis()/1000, false));
                             }
 
                             if(summaryNode.getChildNodes().item(i).getNodeName().equalsIgnoreCase("Coverablelines"))
                             {
                                 String val = summaryNode.getChildNodes().item(i).getTextContent();
                                 Logger.LogInfo("opencover.coverablelines:" + val);
-                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.coverablelines",val,System.currentTimeMillis()/1000));
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.coverablelines",val,System.currentTimeMillis()/1000, false));
                             }
 
 
@@ -237,7 +237,7 @@ public class BuildStatusListener
                             {
                                 String val = summaryNode.getChildNodes().item(i).getTextContent();
                                 Logger.LogInfo("opencover.totallines:" + val);
-                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.totallines",val,System.currentTimeMillis()/1000));
+                                h.scheduleBuildMetric(build, new GraphiteMetric("opencover.totallines",val,System.currentTimeMillis()/1000, false));
                             }
                         }
                     } catch (Exception e) {
@@ -262,7 +262,22 @@ public class BuildStatusListener
 
                 if(!isValidBranch(build)) { return; }
 
-                GraphiteMetric metric = new GraphiteMetric( valueTypeKey.replace(":","."), String.valueOf(value), System.currentTimeMillis()/1000);
+                /*
+                    relevant keys known at the time of writing:
+                    - BuildArtifactsPublishingTime
+                    - BuildCheckoutTime
+                    - BuildDuration
+                    - BuildDurationNetTime
+                    - buildStageDuration:artifactsPublishing
+                    - buildStageDuration:buildFinishing
+                    - buildStageDuration:buildStepRUNNER_*
+                    - buildStageDuration:firstStepPreparation
+                    - buildStageDuration:sourcesUpdate
+                    - TimeSpentInQueue
+                 */
+                boolean isTimer = valueTypeKey.matches(".*(Time|Duration).*");
+
+                GraphiteMetric metric = new GraphiteMetric( valueTypeKey.replace(":","."), String.valueOf(value), System.currentTimeMillis()/1000, isTimer);
 
                 h.scheduleBuildMetric(build, metric);
                 Logger.LogInfo(valueTypeKey + " : " + String.valueOf(value));

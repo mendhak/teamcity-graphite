@@ -23,11 +23,13 @@ public class GraphiteMetric {
     String name;
     String value;
     long timestamp;
+    boolean isTimer;
 
-    public GraphiteMetric(String name, String value, long timeStamp){
+    public GraphiteMetric(String name, String value, long timeStamp, boolean isTimer){
         this.name = name;
         this.value = value;
         this.timestamp = timeStamp;
+        this.isTimer = isTimer;
     }
 
     public String getName(){
@@ -42,6 +44,7 @@ public class GraphiteMetric {
         return timestamp;
     }
 
-
-
+    public boolean isTimer() {
+        return isTimer;
+    }
 }
