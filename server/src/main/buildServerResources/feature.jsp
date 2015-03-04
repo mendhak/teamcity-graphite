@@ -59,7 +59,15 @@
   <td>
     <props:textProperty name="${keys.graphitePrefix}" />
     <span class="error" id="error_${keys.graphitePrefix}"></span>
-    <span class="smallNote">Prefix to use for metrics, eg: build.myapi</span>
+    <span class="smallNote">Prefix to use for the metrics key, eg: build.myapi</span>
+  </td>
+</tr>
+<tr>
+  <th>Suffix<l:star/></th>
+  <td>
+    <props:textProperty name="${keys.graphiteSuffix}" />
+    <span class="error" id="error_${keys.graphiteSuffix}"></span>
+    <span class="smallNote">Suffix to use for the metrics key; optional; eg: branch3.debug</span>
   </td>
 </tr>
 <tr>

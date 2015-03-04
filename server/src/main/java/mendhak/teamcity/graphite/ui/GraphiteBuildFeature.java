@@ -115,6 +115,7 @@ public class GraphiteBuildFeature extends BuildFeature
         map.put(new GraphiteServerKeyNames().getServerKey(), "127.0.0.1");
         map.put(new GraphiteServerKeyNames().getServerPort(), "8125");
         map.put(new GraphiteServerKeyNames().getGraphitePrefix(), "test.build.myapi");
+        map.put(new GraphiteServerKeyNames().getGraphiteSuffix(), "branch3.debug");
         map.put(new GraphiteServerKeyNames().getSendBuildStarted(), "true");
         map.put(new GraphiteServerKeyNames().getSendBuildFinished(), "true");
         map.put(new GraphiteServerKeyNames().getUseUdp(), "true");

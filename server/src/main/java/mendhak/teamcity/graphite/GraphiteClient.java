@@ -66,6 +66,8 @@ public class GraphiteClient
                             String host = build.getParametersProvider().get(keyNames.getServerKey());
                             int port = Integer.valueOf(build.getParametersProvider().get(keyNames.getServerPort()));
                             String metricPrefix = build.getParametersProvider().get(keyNames.getGraphitePrefix());
+                            String metricSuffix = build.getParametersProvider().get(keyNames.getGraphiteSuffix());
+                            String metricSuffixWithDot = metricSuffix.equals("") ? "" : "." + metricSuffix;
 
                             if(useUdp)
                             {
@@ -75,7 +77,7 @@ public class GraphiteClient
                                 InetAddress addr        = InetAddress.getByName(host);
                                 // "xyz.abc.def:1|c" or "xyz.abc.def:1000|ms"
                                 String metricTypeSuffix = sendTimers && metric.isTimer() ? "ms" : "c";
-                                byte[] message          = String.format("%s:%s|%s", metricPrefix + "." + metric.getName() , metric.getValue(), metricTypeSuffix).toLowerCase().getBytes();
+                                byte[] message          = String.format("%s:%s|%s", metricPrefix + "." + metric.getName() + metricSuffixWithDot, metric.getValue(), metricTypeSuffix).toLowerCase().getBytes();
                                 DatagramPacket packet   = new DatagramPacket(message, message.length, addr, port);
                                 sock.send(packet);
                                 sock.close();
@@ -85,7 +87,7 @@ public class GraphiteClient
                                 // Graphite over TCP
                                 Socket socket = new Socket(host, port);
                                 PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
-                                outputStream.println(String.format("%s %s %s", metricPrefix + "." + metric.getName(), metric.getValue(), metric.getTimestamp()).toLowerCase());
+                                outputStream.println(String.format("%s %s %s", metricPrefix + "." + metric.getName() + metricSuffixWithDot, metric.getValue(), metric.getTimestamp()).toLowerCase());
 
                                 outputStream.close();
                                 socket.close();

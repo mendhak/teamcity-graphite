@@ -47,6 +47,12 @@ public class GraphiteBuildParametersProvider extends AbstractBuildParametersProv
                     parameters.put(keyNames.getServerPort(), resolver.resolve(feature.getParameters().get(keyNames.getServerPort())).getResult());
                     parameters.put(keyNames.getGraphitePrefix(), resolver.resolve(feature.getParameters().get(keyNames.getGraphitePrefix())).getResult());
 
+                    String graphiteSuffix = "";
+                    if(feature.getParameters().get(keyNames.getGraphiteSuffix()) != null){
+                        graphiteSuffix = resolver.resolve(feature.getParameters().get(keyNames.getGraphiteSuffix())).getResult();
+                    }
+                    parameters.put(keyNames.getGraphiteSuffix(), graphiteSuffix);
+
                     String sendBuildStarted = "false";
                     if(feature.getParameters().get(keyNames.getSendBuildStarted()) != null)
                     {

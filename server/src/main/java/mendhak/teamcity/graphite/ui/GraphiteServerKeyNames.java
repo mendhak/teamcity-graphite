@@ -40,6 +40,11 @@ public class GraphiteServerKeyNames
         return "graphite_prefix";
     }
 
+    public String getGraphiteSuffix()
+    {
+        return "graphite_suffix";
+    }
+
     public String getSendBuildStarted()
     {
         return "graphite_buildstarted";
