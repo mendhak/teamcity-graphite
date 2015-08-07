@@ -52,7 +52,7 @@ To **build** the project, click `Build | Build Artifacts...` and choose `plugin-
 
 # Troubleshooting
 
-If the plugin doesn't seem to be working, you can find plugin messages in the `catalina.out` file under your TeamCity installation. (Example: `/TeamCity/logs/catalina.out`)
+If the plugin doesn't seem to be working, you can find plugin messages in the log files under your TeamCity installation. (Examples: `/TeamCity/logs/teamcity-server.log`, `/TeamCity/logs/catalina.[DATE].log`)
 This usually gives you a good idea of why a call may have failed.
 
 
