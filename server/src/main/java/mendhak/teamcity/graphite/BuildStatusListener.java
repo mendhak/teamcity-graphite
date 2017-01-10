@@ -287,6 +287,21 @@ public class BuildStatusListener
                  */
                 boolean isTimer = valueTypeKey.matches(".*(Time|Duration).*");
 
+                /*
+                    As documented in https://github.com/mendhak/teamcity-graphite/issues/10 we will have to make sure that
+                    we do not send any timer stats for buildStageDuration:buildStepRUNNER_* steps if the value if the metrics
+                    is noted to 0; rationale for this has been discussed in details in the issue avobe as well as in the
+                    TeamCity ticket https://youtrack.jetbrains.com/issue/TW-47322.
+
+                    Note:  BigDecimal.equals() takes the scale into consideration; we will use comapreTo() instead to nullify scaling
+                           new BigDecimal("0.00").equals(BigDecimal.ZERO);            // false
+                           new BigDecimal("0.00").compareTo(BigDecimal.ZERO) == 0  ;  // true
+                */
+                if (isTimer && valueTypeKey.matches(".*buildStepRUNNER_.*") && value.compareTo(BigDecimal.ZERO) == 0 ){
+                    Logger.LogInfo("Ignoring zero values for " + valueTypeKey + " metric.");
+                    return;
+                }
+
                 GraphiteMetric metric = new GraphiteMetric( valueTypeKey.replace(":","."), String.valueOf(value), System.currentTimeMillis()/1000, isTimer);
 
                 h.scheduleBuildMetric(build, metric);
