@@ -3,9 +3,11 @@ package mendhak.teamcity.graphite;
 
 
 import com.intellij.openapi.util.text.StringUtil;
+import jetbrains.buildServer.log.Loggers;
 import jetbrains.buildServer.serverSide.*;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifactsViewMode;
 import jetbrains.buildServer.util.EventDispatcher;
+import mendhak.teamcity.graphite.ui.GraphiteBuildFeature;
 import mendhak.teamcity.graphite.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
@@ -65,6 +67,27 @@ public class BuildStatusListener
         return false;
     }
 
+    // Look through the buildType's build features and return a boolean describing whether Graphite feature is enabled.
+    @NotNull
+    private boolean IsFeatureEnabled (@NotNull SBuild build)
+    {
+        for (SBuildFeatureDescriptor feature : build.getBuildType().getBuildFeatures()) {
+            String featureType  = feature.getBuildFeature().getType();
+            if (! featureType.equals(GraphiteBuildFeature.FEATURE_TYPE))
+                continue;
+
+            boolean isEnabled = build.getBuildType().isEnabled(feature.getId());
+            if (!isEnabled)
+                break;
+
+            Loggers.SERVER.debug("[Graphite] Graphite build feature is enabled.");
+
+        }
+
+        Loggers.SERVER.debug("[Graphite] Graphite build feature is not enabled.");
+        return false;
+    }
+
     public BuildStatusListener(@NotNull final EventDispatcher<BuildServerListener> listener,
                                @NotNull final GraphiteClient graphiteClient)
     {
@@ -78,7 +101,8 @@ public class BuildStatusListener
             public void changesLoaded(SRunningBuild build)
             {
 
-                if(!isValidBranch(build)) { return; }
+                if(!IsFeatureEnabled(build)) { return; }
+                if(!isValidBranch(build))    { return; }
 
                 boolean sendStarted = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildStarted()));
 
@@ -92,7 +116,8 @@ public class BuildStatusListener
             @Override
             public void buildFinished(SRunningBuild build)
             {
-                if(!isValidBranch(build)) { return; }
+                if(!IsFeatureEnabled(build)) { return; }
+                if(!isValidBranch(build))    { return; }
 
                 boolean sendFinished = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildFinished()));
 
@@ -235,7 +260,8 @@ public class BuildStatusListener
             @Override
             public void buildInterrupted(SRunningBuild build)
             {
-                if(!isValidBranch(build)) { return; }
+                if(!IsFeatureEnabled(build)) { return; }
+                if(!isValidBranch(build))    { return; }
 
             }
 
@@ -243,7 +269,8 @@ public class BuildStatusListener
             public void statisticValuePublished(@NotNull SBuild build, @NotNull String valueTypeKey, @NotNull BigDecimal value) {
                 super.statisticValuePublished(build, valueTypeKey, value);
 
-                if(!isValidBranch(build)) { return; }
+                if(!IsFeatureEnabled(build)) { return; }
+                if(!isValidBranch(build))    { return; }
 
                 /*
                     relevant keys known at the time of writing:
