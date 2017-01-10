@@ -3,9 +3,11 @@ package mendhak.teamcity.graphite;
 
 
 import com.intellij.openapi.util.text.StringUtil;
+import jetbrains.buildServer.log.Loggers;
 import jetbrains.buildServer.serverSide.*;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifactsViewMode;
 import jetbrains.buildServer.util.EventDispatcher;
+import mendhak.teamcity.graphite.ui.GraphiteBuildFeature;
 import mendhak.teamcity.graphite.ui.GraphiteServerKeyNames;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
@@ -65,6 +67,27 @@ public class BuildStatusListener
         return false;
     }
 
+    // Look through the buildType's build features and return a boolean describing whether Graphite feature is enabled.
+    @NotNull
+    private boolean IsFeatureEnabled (@NotNull SBuild build)
+    {
+        for (SBuildFeatureDescriptor feature : build.getBuildType().getBuildFeatures()) {
+            String featureType  = feature.getBuildFeature().getType();
+            if (! featureType.equals(GraphiteBuildFeature.FEATURE_TYPE))
+                continue;
+
+            boolean isEnabled = build.getBuildType().isEnabled(feature.getId());
+            if (!isEnabled)
+                break;
+
+            Loggers.SERVER.debug("[Graphite] Graphite build feature is enabled.");
+
+        }
+
+        Loggers.SERVER.debug("[Graphite] Graphite build feature is not enabled.");
+        return false;
+    }
+
     public BuildStatusListener(@NotNull final EventDispatcher<BuildServerListener> listener,
                                @NotNull final GraphiteClient graphiteClient)
     {
@@ -78,7 +101,8 @@ public class BuildStatusListener
             public void changesLoaded(SRunningBuild build)
             {
 
-                if(!isValidBranch(build)) { return; }
+                if(!IsFeatureEnabled(build)) { return; }
+                if(!isValidBranch(build))    { return; }
 
                 boolean sendStarted = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildStarted()));
 
@@ -92,7 +116,8 @@ public class BuildStatusListener
             @Override
             public void buildFinished(SRunningBuild build)
             {
-                if(!isValidBranch(build)) { return; }
+                if(!IsFeatureEnabled(build)) { return; }
+                if(!isValidBranch(build))    { return; }
 
                 boolean sendFinished = Boolean.valueOf(build.getParametersProvider().get(keyNames.getSendBuildFinished()));
 
@@ -235,7 +260,8 @@ public class BuildStatusListener
             @Override
             public void buildInterrupted(SRunningBuild build)
             {
-                if(!isValidBranch(build)) { return; }
+                if(!IsFeatureEnabled(build)) { return; }
+                if(!isValidBranch(build))    { return; }
 
             }
 
@@ -243,7 +269,8 @@ public class BuildStatusListener
             public void statisticValuePublished(@NotNull SBuild build, @NotNull String valueTypeKey, @NotNull BigDecimal value) {
                 super.statisticValuePublished(build, valueTypeKey, value);
 
-                if(!isValidBranch(build)) { return; }
+                if(!IsFeatureEnabled(build)) { return; }
+                if(!isValidBranch(build))    { return; }
 
                 /*
                     relevant keys known at the time of writing:
@@ -259,6 +286,21 @@ public class BuildStatusListener
                     - TimeSpentInQueue
                  */
                 boolean isTimer = valueTypeKey.matches(".*(Time|Duration).*");
+
+                /*
+                    As documented in https://github.com/mendhak/teamcity-graphite/issues/10 we will have to make sure that
+                    we do not send any timer stats for buildStageDuration:buildStepRUNNER_* steps if the value if the metrics
+                    is noted to 0; rationale for this has been discussed in details in the issue avobe as well as in the
+                    TeamCity ticket https://youtrack.jetbrains.com/issue/TW-47322.
+
+                    Note:  BigDecimal.equals() takes the scale into consideration; we will use comapreTo() instead to nullify scaling
+                           new BigDecimal("0.00").equals(BigDecimal.ZERO);            // false
+                           new BigDecimal("0.00").compareTo(BigDecimal.ZERO) == 0  ;  // true
+                */
+                if (isTimer && valueTypeKey.matches(".*buildStepRUNNER_.*") && value.compareTo(BigDecimal.ZERO) == 0 ){
+                    Logger.LogInfo("Ignoring zero values for " + valueTypeKey + " metric.");
+                    return;
+                }
 
                 GraphiteMetric metric = new GraphiteMetric( valueTypeKey.replace(":","."), String.valueOf(value), System.currentTimeMillis()/1000, isTimer);
 

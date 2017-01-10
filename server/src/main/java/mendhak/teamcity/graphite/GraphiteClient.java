@@ -44,14 +44,22 @@ public class GraphiteClient
                 executor.submit(new Runnable() {
                     public void run() {
                         try {
-
-                            boolean useUdp = Boolean.valueOf(build.getParametersProvider().get(keyNames.getUseUdp()));
+                            // Let's collect the target server and port configurred to send the messages; they can't be
+                            // empty to be able to send the messages. Although this is reinforced via the GUI, we verify
+                            // here too... If they are empty we will silently ignore as it is poinetless to send messages
+                            // to an empty server or a port number... :-)
                             String host = build.getParametersProvider().get(keyNames.getServerKey());
-                            int port = Integer.valueOf(build.getParametersProvider().get(keyNames.getServerPort()));
+                            String stringPort = build.getParametersProvider().get(keyNames.getServerPort());
+                            if (host == null || stringPort ==null ) { return; }
+                            int port = Integer.valueOf(stringPort);  // port number must be an integer
+
+                            // let's collect the prefix and suffix of the metric key name to be constructed
                             String metricPrefix = build.getParametersProvider().get(keyNames.getGraphitePrefix());
                             String metricSuffix = build.getParametersProvider().get(keyNames.getGraphiteSuffix());
                             String metricSuffixWithDot = metricSuffix.equals("") ? "" : "." + metricSuffix;
 
+                            // Let's send the data now, for StatsD it is UDP packet and for Carbon it is TCP packet
+                            boolean useUdp = Boolean.valueOf(build.getParametersProvider().get(keyNames.getUseUdp()));
                             if(useUdp)
                             {
                                 // StatsD over UDP
