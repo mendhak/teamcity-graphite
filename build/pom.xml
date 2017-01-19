@@ -11,8 +11,6 @@
   <properties>
       <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
       <teamcity.graphite.plugin.version>snapshot-${maven.build.timestamp}</teamcity.graphite.plugin.version>
-      <teamcity.graphite.plugin.vendorName>Mendhak</teamcity.graphite.plugin.vendorName>
-      <teamcity.graphite.plugin.vendorUrl>http://mendhak.com/</teamcity.graphite.plugin.vendorUrl>
   </properties>
   <dependencies>
       <dependency>
@@ -43,15 +41,7 @@
                         <token>@Version@</token>
                         <value>${teamcity.graphite.plugin.version}</value>
                     </replacement>
-                    <replacement>
-                        <token>@VendorName@</token>
-                        <value>${teamcity.graphite.plugin.vendorName}</value>
-                    </replacement>
-                    <replacement>
-                        <token>@VendorURL@</token>
-                        <value>${teamcity.graphite.plugin.vendorUrl}</value>
-                    </replacement>
-                </replacements>                        
+                </replacements>
             </configuration>
         </plugin>
         <plugin>

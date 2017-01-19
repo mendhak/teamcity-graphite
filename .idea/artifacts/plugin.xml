@@ -1,9 +1,15 @@
 <component name="ArtifactManager">
   <artifact name="plugin">
     <output-path>$PROJECT_DIR$/out/artifacts/plugin</output-path>
+    <properties id="ant-postprocessing">
+      <options enabled="true">
+        <file>file://$PROJECT_DIR$/build.xml</file>
+        <target>stamp-version</target>
+      </options>
+    </properties>
     <root id="root">
       <element id="directory" name="server">
-        <element id="archive" name="teamcity-graphite-server.jar">
+        <element id="archive" name="graphite-server.jar">
           <element id="module-output" name="graphite-server" />
         </element>
       </element>

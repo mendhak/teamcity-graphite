@@ -8,8 +8,8 @@
     <download-url>https://github.com/mendhak/teamcity-graphite/releases</download-url>
     <email>Plugin author e-mail</email>
     <vendor>
-      <name>@VendorName@</name>
-      <url>@VendorURL@</url>
+      <name>Mendhak</name>
+      <url>http://mendhak.com/</url>
       <logo>Plugin vendor logo URL</logo>
     </vendor>
   </info>
