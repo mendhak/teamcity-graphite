@@ -39,16 +39,19 @@ ______________
 
 # Code setup
 
-You will need [IntelliJ IDEA](http://www.jetbrains.com/idea/download/) as this project uses IDEA features to build artifacts.
+## Building with IntelliJ IDEA
 
-You will also need to download and extract [TeamCity](http://www.jetbrains.com/teamcity/download/) which provides the required jars.  Be sure to download the Linux `.tar.gz` which contains the libraries.  
+Download and extract [TeamCity](http://www.jetbrains.com/teamcity/download/) which provides the required jars.  Be sure to download the Linux `.tar.gz` which contains the libraries.  
 
 Open the project in Intellij IDEA, you should see a lot of unresolved references, this is normal.
 
-Go to `File | Settings | Path Variables` and set the `TeamCityDistribution` variable, pointing it to your TeamCity location.  IntelliJ will pick up the various jars and the unresolved references will resolve.
+Go to `File | Settings | Appearance & Behavior | Path Variables` and set the `TeamCityDistribution` variable, pointing it to your TeamCity location.  IntelliJ will pick up the various jars and the unresolved references will resolve.
 
-To **build** the project, click `Build | Build Artifacts...` and choose `plugin-zip`.  The .zip is generated in `/out/artifacts/plugin_zip`.
+To **build** the project, click `Build | Build Artifacts...` and choose `plugin-zip`.  The .zip is generated in `/out/artifacts/plugin_zip/teamcity.graphite.zip` as well as in the project root as `teamcity.graphite.zip`.
 
+## Building with Maven
+
+Use `mvn package`, which produces the .zip file in `target/graphite.zip`.  You can also use your favourite IDE's Maven integration to achieve the same.
 
 # Troubleshooting
 

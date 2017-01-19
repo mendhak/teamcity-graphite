@@ -5,17 +5,17 @@
       <options enabled="true" />
     </properties>
     <root id="root">
-      <element id="directory" name="server">
+      <element id="directory" name="graphite-server">
         <element id="archive" name="teamcity-graphite-server.jar">
-          <element id="module-output" name="server" />
+          <element id="module-output" name="graphite-server" />
         </element>
         <element id="archive" name="teamcity-graphite-resources.jar">
           <element id="directory" name="buildServerResources">
-            <element id="file-copy" path="$PROJECT_DIR$/server/src/main/buildServerResources/feature.jsp" />
+            <element id="file-copy" path="$PROJECT_DIR$/graphite-server/src/main/buildServerResources/feature.jsp" />
           </element>
         </element>
       </element>
-      <element id="file-copy" path="$PROJECT_DIR$/server/teamcity-server-plugin.xml" output-file-name="teamcity-plugin.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/teamcity-plugin.xml" output-file-name="teamcity-plugin.xml" />
     </root>
   </artifact>
 </component>
