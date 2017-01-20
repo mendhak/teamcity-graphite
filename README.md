@@ -37,9 +37,7 @@ MIT
 ______________
 
 
-# Development setup
-
-## Building with Maven
+# Development
 
 Use `mvn package`, which produces the .zip file in `/target/graphite.zip`.  You can also use your favourite IDE's Maven integration to achieve the same.
 
