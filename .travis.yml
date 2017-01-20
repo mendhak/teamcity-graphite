@@ -11,3 +11,6 @@ script: mvn package
 
 jdk:
 - openjdk7
+
+notifications:
+  email: false
