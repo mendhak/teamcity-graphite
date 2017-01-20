@@ -11,4 +11,3 @@ script: mvn package
 
 jdk:
 - openjdk7
-- openjdk8
