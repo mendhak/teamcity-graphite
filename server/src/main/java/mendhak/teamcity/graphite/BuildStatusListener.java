@@ -81,7 +81,7 @@ public class BuildStatusListener
                 break;
 
             Loggers.SERVER.debug("[Graphite] Graphite build feature is enabled.");
-
+            return true;
         }
 
         Loggers.SERVER.debug("[Graphite] Graphite build feature is not enabled.");
