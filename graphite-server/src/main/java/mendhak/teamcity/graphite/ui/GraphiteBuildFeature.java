@@ -126,6 +126,6 @@ public class GraphiteBuildFeature extends BuildFeature
     @Override
     public boolean isMultipleFeaturesPerBuildTypeAllowed()
     {
-        return true;
+        return false;
     }
 }
