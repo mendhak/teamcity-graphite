@@ -67,7 +67,7 @@ public class GraphiteClient
                                 DatagramSocket sock     = new DatagramSocket();
                                 InetAddress addr        = InetAddress.getByName(host);
                                 // "xyz.abc.def:1|c" or "xyz.abc.def:1000|ms"
-                                String metricTypeSuffix = sendTimers && metric.isTimer() ? "ms" : "c";
+                                String metricTypeSuffix = sendTimers && metric.isTimer() ? "ms" : "g";
                                 byte[] message          = String.format("%s:%s|%s", metricPrefix + "." + metric.getName() + metricSuffixWithDot, metric.getValue(), metricTypeSuffix).toLowerCase().getBytes();
                                 DatagramPacket packet   = new DatagramPacket(message, message.length, addr, port);
                                 sock.send(packet);

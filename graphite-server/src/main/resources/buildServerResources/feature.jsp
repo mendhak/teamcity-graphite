@@ -74,8 +74,8 @@
   <th>Send timing data as timers (StatsD only)</th>
   <td>
     <props:checkboxProperty name="${keys.sendTimers}" />
-    <label for="${keys.sendTimers}">Check to use timers, uncheck to use counters</label>
-    <span class="smallNote">Timing data (e.g. build checkout time, time spent in queue) can be sent as StatsD timers. Keep unchecked to send all data as counters. The setting is ignored when sending data to Graphite (TCP).</span>
+    <label for="${keys.sendTimers}">Check to use timers, uncheck to use gauges</label>
+    <span class="smallNote">Timing data (e.g. build checkout time, time spent in queue) can be sent as StatsD timers. Keep unchecked to send all data as gauges. The setting is ignored when sending data to Graphite (TCP).</span>
   </td>
 </tr>
 <tr>
